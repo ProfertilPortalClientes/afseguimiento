@@ -1,0 +1,39 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m" controllerName="profertil.afeseguimiento.controller.Creacion" displayBlock="true">
+    <App>
+        <pages>
+            <Page id="idPageCreacion" title="{i18n>Creacion.title}" showNavButton="true" navButtonPress=".handleNavBack">
+                <content>
+                    <IconTabBar id="idIconTabBar" select=".onFilterSelect" class="sapUiResponsiveContentPadding" expandable="false" tabDensityMode="{= !${device>/system/phone} ? 'Cozy' : 'Compact' }">
+                        <items>
+                            <IconTabFilter icon="sap-icon://form" text="{i18n>CreacionTabFilterDatosGenerales.text}" key="DatosGenerales" design="Horizontal">
+                                <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.DatosGenerales" type="XML"/>
+                            </IconTabFilter>
+                            <IconTabSeparator visible="{= !${device>/system/phone} &amp;&amp; ${AFEModel>/IncluyeReemplazos} }"/>
+                            <IconTabFilter icon="sap-icon://settings" text="{i18n>CreacionTabFilterInformeTecnico.text}" key="InformeTecnico" design="Horizontal" visible="{= ${AFEModel>/IncluyeReemplazos} }">
+                                <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.InformeTecnico" type="XML"/>
+                            </IconTabFilter>
+                            <IconTabSeparator visible="{= !${device>/system/phone} }"/>
+                            <IconTabFilter icon="sap-icon://add-product" text="{i18n>CreacionTabFilterDatosComplementarios.text}" key="DatosComplementarios" design="Horizontal">
+                                <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.DatosComplementarios" type="XML"/>
+                            </IconTabFilter>
+                            <IconTabSeparator visible="{= !${device>/system/phone} }"/>
+                            <IconTabFilter icon="sap-icon://attachment" text="{i18n>CreacionTabFilterAdjuntos.text}" key="Adjuntos" design="Horizontal">
+                                <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.Adjuntos" type="XML"/>
+                            </IconTabFilter>
+                        </items>
+                    </IconTabBar>
+                </content>
+                <footer>
+                    <OverflowToolbar>
+                        <content>
+                            <ToolbarSpacer/>
+                            <Button text="{i18n>CreacionBotonCreacionAFE.text}" icon="sap-icon://create-form" type="Emphasized" press=".handleCreacionAFEPress"/>
+                        </content>
+                    </OverflowToolbar>
+                </footer>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>

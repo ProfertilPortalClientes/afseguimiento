@@ -1,0 +1,55 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:tnt="sap.tnt"
+    xmlns:pf="sap.suite.ui.commons">
+    <Dialog title="Visualización del Workflow AFE {appModel>/AFE}">
+        <content>
+            <VBox>
+                <pf:ProcessFlow scrollable="false" foldedCorners="true" nodePress="onNodePress" nodes="{workflowModel>/Informacion/nodes}" lanes="{workflowModel>/Informacion/lanes}">
+                    <pf:nodes>
+                        <pf:ProcessFlowNode laneId="{workflowModel>lane}" nodeId="{workflowModel>id}" children="{workflowModel>children}" focused="{workflowModel>focused}" state="{workflowModel>state}" stateText="{workflowModel>stateText}" highlighted="{workflowModel>highlighted}">
+                            <pf:zoomLevelOneContent>
+                                <VBox alignItems="Center">
+                                    <Text text="{ path: 'workflowModel>fecha', type: 'sap.ui.model.type.DateTime', formatOptions: { style: 'short' } }"  textAlign="Center"/>
+                                    <Text text="{workflowModel>title}" textAlign="Center"/>
+                                    <Text text="{workflowModel>nombre}" textAlign="Center"/>
+                                    <tnt:InfoLabel text="{workflowModel>stateText}" renderMode="Narrow" colorScheme="8" icon="{workflowModel>icono}"/>
+                                    <!-- <Image height="9rem" src="{workflowModel>imagen}" alt="asd" densityAware="false" class="sapUiTinyMarginTop"/> -->
+                                </VBox>
+                            </pf:zoomLevelOneContent>
+                            <pf:zoomLevelTwoContent>
+                                <VBox alignItems="Center">
+                                    <Text text="{ path: 'workflowModel>fecha', type: 'sap.ui.model.type.DateTime', formatOptions: { style: 'short' } }"  textAlign="Center"/>
+                                    <Text text="{workflowModel>title}"  textAlign="Center"/>
+                                    <Text text="{workflowModel>nombre}" textAlign="Center"/>
+                                    <tnt:InfoLabel text="{workflowModel>stateText}" renderMode="Narrow" colorScheme="{workflowModel>colorScheme}" icon="{workflowModel>icono}"/>
+                                </VBox>
+                            </pf:zoomLevelTwoContent>
+                            <pf:zoomLevelThreeContent>
+                                <VBox alignItems="Center">
+                                    <Text text="{ path: 'workflowModel>fecha', type: 'sap.ui.model.type.DateTime', formatOptions: { style: 'short' } }"  textAlign="Center"/> 
+                                    <Text text="{workflowModel>title}" textAlign="Center"/>
+                                    <tnt:InfoLabel renderMode="Narrow" colorScheme="8" icon="{workflowModel>icono}"/>
+                                </VBox>
+                            </pf:zoomLevelThreeContent>
+                            <pf:zoomLevelFourContent>
+                                <VBox alignItems="Center">
+                                    <Image height="100%" src="{workflowModel>imagen}" alt="ads" densityAware="false"/>
+				                    <tnt:InfoLabel text="" colorScheme="8" icon="{workflowModel>icono}" />
+                                </VBox>
+                            </pf:zoomLevelFourContent>
+                        </pf:ProcessFlowNode>
+                    </pf:nodes>
+                    <pf:lanes>
+                        <pf:ProcessFlowLaneHeader laneId="{workflowModel>id}" iconSrc="{workflowModel>icon}" text="{workflowModel>label}" position="{workflowModel>position}"/>
+                    </pf:lanes>
+                </pf:ProcessFlow>
+            </VBox>
+        </content>
+        <buttons>
+            <Button text="Cerrar" press=".handleCerrarDialogoVisualizacion"/>
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

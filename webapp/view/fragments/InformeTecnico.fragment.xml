@@ -1,0 +1,100 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+    <!-- Modo creación -->
+    <Panel visible="{= ${appModel>/Modo} === 'creacion' ? true : false }">
+        <f:Form editable="true">
+            <f:layout>
+                <f:ResponsiveGridLayout labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false" />
+            </f:layout>
+            <f:formContainers>
+                <f:FormContainer title="">
+                    <f:formElements>
+                        <f:FormElement label="Descripción del bien reemplazado y justificación del reemplazo">
+                            <f:fields>
+                                <TextArea
+                                    rows="4"
+                                    value="{AFEModel>/InformeTecnicoDescripcion}"
+                                    placeholder="{i18n>InformeTecnico.InformeTecnicoDescripcion.placeholder.text}"
+                                    enabled="{= ${AFEModel>/IncluyeReemplazos} }"
+                                    required="{= ${AFEModel>/IncluyeReemplazos} }"
+                                    valueStateText="{i18n>InformeTecnico.DescripcionValidacion.text}"
+                                    valueState="{estadosValidaciones>/DatosInformeTecnico_Descripcion}"
+                                />
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="">
+                    <f:formElements>
+                        <f:FormElement label="Destino del bien reemplazado">
+                            <f:fields>
+                                <TextArea
+                                    rows="4"
+                                    value="{AFEModel>/InformeTecnicoDestino}"
+                                    placeholder="Ingrese el destino del bien reemplazado"
+                                    enabled="{= ${AFEModel>/IncluyeReemplazos} }"
+                                    required="{= ${AFEModel>/IncluyeReemplazos} }"
+                                    valueStateText="{i18n>InformeTecnico.DestinoValidacion.text}"
+                                    valueState="{estadosValidaciones>/DatosInformeTecnico_Destino}"
+                                />
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="">
+                    <f:formElements>
+                        <f:FormElement label="Cálculo del valor orígen del bien reemplazado">
+                            <f:fields>
+                                <TextArea
+                                    rows="4"
+                                    value="{AFEModel>/InformeTecnicoCalculo}"
+                                    placeholder="Ingrese el cálculo del valor origen del bien reemplazado"
+                                    enabled="{= ${AFEModel>/IncluyeReemplazos} }"
+                                    required="{= ${AFEModel>/IncluyeReemplazos} }"
+                                    valueStateText="{i18n>InformeTecnico.CalculoValidacion.text}"
+                                    valueState="{estadosValidaciones>/DatosInformeTecnico_Calculo}"
+                                />
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+            </f:formContainers>
+        </f:Form>
+    </Panel>
+    <!-- Modo visualización -->
+    <Panel visible="{= ${appModel>/Modo} === 'visualizacion' ? true : false }">
+        <f:Form editable="true">
+            <f:layout>
+                 <f:ResponsiveGridLayout labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false"/>
+           </f:layout>
+            <f:formContainers>
+                <f:FormContainer title="Descripción del bien reemplazado">
+                    <f:formElements>
+                        <f:FormElement label="">
+                            <f:fields>
+                                <TextArea enabled="false" rows="4" value="{AFEModel>/InformeTecnicoDescripcion}" />
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Destino del bien reemplazado">
+                    <f:formElements>
+                        <f:FormElement label="">
+                            <f:fields>
+                                <TextArea enabled="false" rows="4" value="{AFEModel>/InformeTecnicoDestino}" />
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Cálculo del valor orígen del bien reemplazado">
+                    <f:formElements>
+                        <f:FormElement label="">
+                            <f:fields>
+                                <TextArea enabled="false" rows="4" value="{AFEModel>/InformeTecnicoCalculo}" />
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+            </f:formContainers>
+        </f:Form>
+    </Panel>
+</core:FragmentDefinition>

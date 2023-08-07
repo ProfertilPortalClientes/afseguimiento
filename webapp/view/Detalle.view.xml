@@ -1,0 +1,37 @@
+<mvc:View xmlns="sap.m"
+    xmlns:semantic="sap.f.semantic"
+    xmlns:core="sap.ui.core"
+    xmlns:footerbar="sap.ushell.ui.footerbar"
+    xmlns:mvc="sap.ui.core.mvc" controllerName="profertil.afeseguimiento.controller.Detalle">
+    <semantic:SemanticPage id="detailPage" busy="{detailView>/busy}" busyIndicatorDelay="{detailView>/delay}">
+        <semantic:titleHeading>
+            <Title text="Orden de inversión: {AFEModel>/AFE}" level="H2"/>
+        </semantic:titleHeading>
+        <semantic:headerContent>
+            <ObjectAttribute title="Fecha de creación" text="{path: 'AFEModel>/FechaEmision', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}"/>
+            <ObjectAttribute title="Usuario creador" text="{AFEModel>/Creador}"/>
+            <ObjectStatus state="Warning" text="{path: 'AFEModel>/Estado', formatter: '.formatter.getStatusText'}"/>
+        </semantic:headerContent>
+        <semantic:content>
+            <IconTabBar id="idIconTabBar" select=".onFilterSelect" class="sapUiResponsiveContentPadding" expandable="false" backgroundDesign="Transparent" headerBackgroundDesign="Transparent" tabDensityMode="{= !${device>/system/phone} ? 'Cozy' : 'Compact' }">
+                <items>
+                    <IconTabFilter icon="sap-icon://form" text="{i18n>CreacionTabFilterDatosGenerales.text}" key="DatosGenerales" design="Horizontal">
+                        <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.DatosGenerales" type="XML"/>
+                    </IconTabFilter>
+                    <IconTabSeparator visible="{= !${device>/system/phone} }"/>
+                    <IconTabFilter icon="sap-icon://settings" text="{i18n>CreacionTabFilterInformeTecnico.text}" key="InformeTecnico" design="Horizontal">
+                        <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.InformeTecnico" type="XML"/>
+                    </IconTabFilter>
+                    <IconTabSeparator visible="{= !${device>/system/phone} }"/>
+                    <IconTabFilter icon="sap-icon://add-product" text="{i18n>CreacionTabFilterDatosComplementarios.text}" key="DatosComplementarios" design="Horizontal">
+                        <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.DatosComplementarios" type="XML"/>
+                    </IconTabFilter>
+                    <IconTabSeparator visible="{= !${device>/system/phone} }"/>
+                    <IconTabFilter icon="sap-icon://attachment" text="{i18n>CreacionTabFilterAdjuntos.text}" key="Adjuntos" design="Horizontal">
+                        <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.Adjuntos" type="XML"/>
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </semantic:content>
+    </semantic:SemanticPage>
+</mvc:View>

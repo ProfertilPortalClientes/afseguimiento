@@ -1,0 +1,139 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:u="sap.ui.unified"
+    xmlns:fb="sap.ui.comp.filterbar" controllerName="profertil.afeseguimiento.controller.Principal" displayBlock="true">
+    <App>
+        <pages>
+            <Page id="idPagePrincipal" title="{i18n>title}">
+                <content>
+                    <fb:FilterBar reset="onReset" search=".handleGetSeguimientoAFES" showRestoreButton="true" showClearButton="true">
+                        <fb:filterGroupItems>
+                            <fb:FilterGroupItem groupName="__$INTERNAL$" name="A" label="{i18n>PrincipalFiltroFecha.label}" partOfCurrentVariant="true" visibleInFilterBar="true">
+                                <fb:control>
+                                    <DateRangeSelection id="idDrsFecha" required="true" dateValue="{filtrosModel>/FechaDesde}" secondDateValue="{filtrosModel>/FechaHasta}" value= "{
+                                        'type': 'sap.ui.model.type.DateInterval',
+                                        'formatOptions': {
+                                            'pattern': 'dd/MM/yyyy'
+                                        },
+                                        'parts': [
+                                            {
+                                                'type': 'sap.ui.model.type.Date',
+                                                'path': 'filtrosModel>/FechaDesde'
+                                            },
+                                            {
+                                                'type': 'sap.ui.model.type.Date',
+                                                'path': 'filtrosModel>/FechaHasta'
+                                            }
+                                        ]
+                                    }"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <fb:FilterGroupItem groupName="__$INTERNAL$" name="C" label="{i18n>PrincipalFiltroAFE.label}" partOfCurrentVariant="true" visibleInFilterBar="true">
+                                <fb:control>
+                                    <SearchField showSearchButton="false" value="{filtrosModel>/AFE}" placeholder="{i18n>PrincipalFiltroAFE.placeholder}"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <fb:FilterGroupItem groupName="__$INTERNAL$" name="E" label="{i18n>PrincipalFiltroTitulo.label}" partOfCurrentVariant="true" visibleInFilterBar="true">
+                                <fb:control>
+                                    <SearchField showSearchButton="false" value="{filtrosModel>/Titulo}" placeholder="{i18n>PrincipalFiltroTitulo.placeholder}"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <fb:FilterGroupItem groupName="__$INTERNAL$" name="F" label="{i18n>PrincipalFiltroImputadoA.label}" partOfCurrentVariant="true" visibleInFilterBar="true">
+                                <fb:control>
+                                    <ComboBox id="idMCboImputacion" items="{imputacionesModel>/Imputaciones}" selectedKey="{filtrosModel>/Imputacion}" placeholder="{i18n>PrincipalFiltroImputadoA.placeholder}">
+                                        <core:Item key="{imputacionesModel>NumeroOrden}" text="{imputacionesModel>Codigo}"/>
+                                    </ComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <!-- <fb:FilterGroupItem groupName="__$INTERNAL$" name="B" label="{i18n>PrincipalFiltroUsuario.label}" partOfCurrentVariant="true" visibleInFilterBar="true" visible="{= ${loginModel>/DatosUsuario/Rol} === 'S' ? true : false }">
+                                <fb:control>
+                                    <MultiComboBox id="idMCboUsuarios" items="{usuariosModel>/Usuarios}" selectedKeys="{filtrosModel>/Usuarios}" placeholder="{i18n>PrincipalFiltroUsuario.placeholder}">
+                                        <core:Item key="{usuariosModel>Creador}" text="{usuariosModel>Creador} - {usuariosModel>Nombre}, {usuariosModel>Apellido} ({usuariosModel>Legajo})"/>
+                                    </MultiComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <fb:FilterGroupItem groupName="__$INTERNAL$" name="D" label="{i18n>PrincipalFiltroEstado.label}" partOfCurrentVariant="true" visibleInFilterBar="true">
+                                <fb:control>
+                                    <MultiComboBox id="idMCboEstados" items="{estadosModel>/Estados}" selectedKeys="{filtrosModel>/Estados}" placeholder="{i18n>PrincipalFiltroEstado.placeholder}">
+                                        <core:Item key="{estadosModel>key}" text="{estadosModel>descripcion}"/>
+                                    </MultiComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem> -->
+                            <fb:FilterGroupItem groupName="__$INTERNAL$" name="G" label="{i18n>PrincipalFiltroMontoPresupuestadoDesde.label}" partOfCurrentVariant="true" visibleInFilterBar="true">
+                                <fb:control>
+                                    <Input type="Number" value="{filtrosModel>/MontoPresupuestadoDesde}" placeholder="{i18n>PrincipalFiltroMontoPresupuestadoDesde.placeholder}"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <fb:FilterGroupItem groupName="__$INTERNAL$" name="H" label="{i18n>PrincipalFiltroMontoPresupuestadoHasta.label}" partOfCurrentVariant="true" visibleInFilterBar="true">
+                                <fb:control>
+                                    <Input type="Number" value="{filtrosModel>/MontoPresupuestadoHasta}" placeholder="{i18n>PrincipalFiltroMontoPresupuestadoHasta.placeholder}"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <fb:FilterGroupItem groupName="__$INTERNAL$" name="I" label="{i18n>PrincipalFiltroMontoSolicitadoDesde.label}" partOfCurrentVariant="true" visibleInFilterBar="true">
+                                <fb:control>
+                                    <Input type="Number" value="{filtrosModel>/MontoSolicitadoDesde}" placeholder="{i18n>PrincipalFiltroMontoSolicitadoDesde.placeholder}"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <fb:FilterGroupItem groupName="__$INTERNAL$" name="J" label="{i18n>PrincipalFiltroMontoSolicitadoHasta.label}" partOfCurrentVariant="true" visibleInFilterBar="true">
+                                <fb:control>
+                                    <Input type="Number" value="{filtrosModel>/MontoSolicitadoHasta}" placeholder="{i18n>PrincipalFiltroMontoSolicitadoHasta.placeholder}"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                        </fb:filterGroupItems>
+                    </fb:FilterBar>
+                    <Table noDataText="{i18n>PrincipalTablaAFE.noData}" id="idTblAFE" items="{seguimientoModel>/Historial}">
+                        <headerToolbar>
+                            <OverflowToolbar>
+                                <ToolbarSpacer/>
+                                <Button icon="sap-icon://create-form" type="Emphasized" press=".handleCreacionAFEPress" tooltip="{i18n>PrincipalBotonCreacionAFE.tooltip}" text="{i18n>PrincipalBotonCreacionAFE.text}" visible="{= ${loginModel>/DatosUsuario/Rol} === 'S' ? true : false }"/>
+                            </OverflowToolbar>
+                        </headerToolbar>
+                        <ColumnListItem>
+                            <cells>
+                                <Link text="{seguimientoModel>AFE}" press=".handleDetalleAFEPress"/>
+                                <Text text="{seguimientoModel>Titulo}"/>
+                                <Text text="{path: 'seguimientoModel>FechaEmision', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}"/>
+                                <Text text="{seguimientoModel>Creador}"/>
+                                <Text text="{path: 'seguimientoModel>Estado', formatter: '.formatter.getStatusText'}"/>
+                                <Button tooltip="{i18n>PrincipalBotonVerEstadoWF.tooltip}" icon="sap-icon://workflow-tasks" press=".handleGetEstadosWorkflowAFE"/>
+                            </cells>
+                        </ColumnListItem>
+                        <columns>
+                            <Column width="8rem">
+                                <header>
+                                    <Label text="{i18n>PrincipalTablaAFE.ColumnaID.text}"/>
+                                </header>
+                            </Column>
+                            <Column>
+                                <header>
+                                    <Label text="{i18n>PrincipalTablaAFE.ColumnaTitulo.text}"/>
+                                </header>
+                            </Column>
+                            <Column>
+                                <header>
+                                    <Label text="{i18n>PrincipalTablaAFE.ColumnaFechaCreacion.text}"/>
+                                </header>
+                            </Column>
+                            <Column>
+                                <header>
+                                    <Label text="{i18n>PrincipalTablaAFE.ColumnaUsuarioCreador.text}"/>
+                                </header>
+                            </Column>
+                            <Column>
+                                <header>
+                                    <Label text="{i18n>PrincipalTablaAFE.ColumnaEstado.text}"/>
+                                </header>
+                            </Column>
+                            <Column hAlign="Center" width="8rem">
+                                <header>
+                                    <Label text="{i18n>PrincipalTablaAFE.ColumnaVerEstadoWF.text}"/>
+                                </header>
+                            </Column>
+                        </columns>
+                    </Table>
+                </content>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>

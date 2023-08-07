@@ -1,0 +1,426 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:l="sap.ui.layout">
+    <!-- Modo creación -->
+    <Panel visible="{= ${appModel>/Modo} === 'creacion' ? true : false }">
+        <f:Form editable="true">
+            <f:layout>
+                <f:ResponsiveGridLayout labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2" singleContainerFullSize="false"/>
+            </f:layout>
+            <f:formContainers>
+                <f:FormContainer title="Datos generales">
+                    <f:formElements>
+                        <f:FormElement label="AFE Complementario">
+                            <f:fields>
+                                <Switch enabled="false" customTextOn="Si" customTextOff="No" state="{AFEModel>/Complementario}" required="true"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Nro. de revisión">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/NumeroRevision}" required="true" valueStateText="{i18n>DatosGenerales.NumeroRevisionValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_NumeroRevision}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Fecha de emisión">
+                            <f:fields>
+                                <Input enabled="false" value="{path: 'AFEModel>/FechaEmision', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}" required="true" valueStateText="{i18n>DatosGenerales.FechaEmisionValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_FechaEmision}"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Referentes">
+                    <f:formElements>
+                        <f:FormElement label="Iniciador">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Creador}" required="true" valueStateText="{i18n>DatosGenerales.CreadorValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_Creador}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Responsable">
+                            <f:fields>
+                                <Select items="{valueHelpModel>/Responsables}" placeholder="Seleccione responsable" selectedKey="{AFEModel>/Responsable}" change=".handleSelectResponsable" required="true" valueStateText="{i18n>DatosGenerales.ResponsableValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_Responsable}" showSecondaryValues= "true">
+                                    <core:ListItem key="{valueHelpModel>Usuario}" text="{valueHelpModel>Apellido}, {valueHelpModel>Nombre}" additionalText="{valueHelpModel>Usuario}"/>
+                                </Select>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Jefe">
+                            <f:fields>
+                                <Select items="{valueHelpModel>/Jefes}" placeholder="Seleccione jefe" selectedKey="{AFEModel>/Jefe}" valueStateText="{i18n>DatosGenerales.JefeValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_Jefe}" showSecondaryValues= "true">
+                                    <core:ListItem key="{valueHelpModel>Usuario}" text="{valueHelpModel>Apellido}, {valueHelpModel>Nombre}" additionalText="{valueHelpModel>Usuario}"/>
+                                </Select>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Gerente aprobador">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Gerente}" required="true" valueStateText="{i18n>DatosGenerales.GerenteValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_Gerente}"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Datos de la inversión">
+                    <f:formElements>
+                        <f:FormElement label="Sector de origen">
+                            <f:fields>
+                                <Select items="{valueHelpModel>/Sectores}" placeholder="Seleccione sector" selectedKey="{AFEModel>/SectorOrigen}" required="true" valueStateText="{i18n>DatosGenerales.SectorOrigenValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_SectorOrigen}">
+                                    <core:Item key="{valueHelpModel>Sector}" text="{valueHelpModel>Descripcion}" />
+                                </Select>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Período desde/hasta">
+                            <f:fields>
+                                <Select items="{valueHelpModel>/PeriodosDesde}" selectedKey="{AFEModel>/PeriodoDesde}" required="true" valueStateText="{i18n>DatosGenerales.PeriodoDesdeValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_PeriodoDesde}">
+                                    <layoutData>
+                                        <l:GridData span="XL4 L4 M6 S6"/>
+                                    </layoutData>
+                                    <core:Item key="{valueHelpModel>Periodo}" text="{valueHelpModel>Periodo}" />
+                                </Select>
+                                <Select items="{valueHelpModel>/PeriodosHasta}" selectedKey="{AFEModel>/PeriodoHasta}" valueStateText="{i18n>DatosGenerales.PeriodoHastaValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_PeriodoHasta}">
+                                    <layoutData>
+                                        <l:GridData span="XL4 L4 M6 S6"/>
+                                    </layoutData>
+                                    <core:Item key="{valueHelpModel>Periodo}" text="{valueHelpModel>Periodo}" />
+                                </Select>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Imputado a">
+                            <f:fields>
+                                <Select items="{valueHelpModel>/Imputaciones}" change=".handleChangeImputacion" placeholder="Seleccione imputación" selectedKey="{AFEModel>/ImputadoA}" required="true" valueStateText="{i18n>DatosGenerales.ImputadoAValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_ImputadoA}">
+                                    <core:Item key="{valueHelpModel>NumeroOrden}" text="{valueHelpModel>Codigo}" />
+                                </Select>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Título">
+                            <f:fields>
+                                <Input enabled="{AFEModel>/TituloEditable}" value="{AFEModel>/Titulo}" required="true" valueStateText="{i18n>DatosGenerales.TituloValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_Titulo}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Categoría/Código">
+                            <f:fields>
+                                <Input value="{AFEModel>/Categoria}" enabled="{AFEModel>/TipoInversionDatosEditables}">
+                                    <layoutData>
+                                        <l:GridData span="XL4 L4 M6 S6"/>
+                                    </layoutData>
+                                </Input>
+                                <Input value="{AFEModel>/Codigo}" enabled="{AFEModel>/TipoInversionDatosEditables}">
+                                    <layoutData>
+                                        <l:GridData span="XL4 L4 M6 S6"/>
+                                    </layoutData>
+                                </Input>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Tipo de inversión">
+                            <f:fields>
+                                <!-- <VBox>
+                                    <CheckBox text="Mant. de capital" required="true" enabled="{AFEModel>/TipoInversionDatosEditables}" selected="{= ${AFEModel>/TipoInversion} === 'mantcapital' ? true : false }"/>
+                                    <CheckBox text="Crec. o rentabilidad" required="true" enabled="{AFEModel>/TipoInversionDatosEditables}" selected="{= ${AFEModel>/TipoInversion} === 'crecrentabilidad' ? true : false }"/>
+                                </VBox> -->                                
+                                <RadioButtonGroup id="GroupA">                
+                                    <RadioButton text="Mant. de capital" enabled="{AFEModel>/TipoInversionDatosEditables}" selected="{AFEModel>/TipoInversionMantCapital}"/>
+                                    <RadioButton text="Crec. o rentabilidad" enabled="{AFEModel>/TipoInversionDatosEditables}" selected="{AFEModel>/TipoInversionCrecRentabilidad}"/>
+                                </RadioButtonGroup>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Montos">
+                    <f:formElements>
+                        <f:FormElement label="Monto presupuestado">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/MontoPresupuestado}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Monto solicitado/Moneda">
+                            <f:fields>
+                                <Input value="{AFEModel>/MontoSolicitado}" required="true" valueStateText="{i18n>DatosGenerales.MontoSolicitadoValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_MontoSolicitado}" type="Number">
+                                    <layoutData>
+                                        <l:GridData span="XL6 L6 M9 S9"/>
+                                    </layoutData>
+                                </Input>
+                                <Input enabled="false" value="{AFEModel>/MontoSolicitadoMoneda}">
+                                    <layoutData>
+                                        <l:GridData span="XL2 L2 M3 S3"/>
+                                    </layoutData>
+                                </Input>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Monto en moneda origen/Moneda">
+                            <f:fields>
+                                <Input value="{AFEModel>/MontoMonedaOrigen}" type="Number">
+                                    <layoutData>
+                                        <l:GridData span="XL6 L6 M9 S9"/>
+                                    </layoutData>
+                                </Input>
+                                <Select items="{valueHelpModel>/Monedas}" selectedKey="{AFEModel>/MontoMonedaOrigenMoneda}" showSecondaryValues= "true">
+                                    <layoutData>
+                                        <l:GridData span="XL2 L2 M3 S3"/>
+                                    </layoutData>
+                                    <core:ListItem key="{valueHelpModel>Moneda}" text="{valueHelpModel>Moneda}" additionalText="{valueHelpModel>Descripcion}"/>
+                                </Select>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Diferencia">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Diferencia}" type="Number"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Monto que compensa">
+                            <f:fields>
+                                <Input value="{AFEModel>/MontoCompensado}" type="Number"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Desvío">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Desvio}" type="Number"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Descomposición del gasto">
+                            <f:fields>
+                                <Button text="Visualizar" width="50%" press=".handleDescomposicionGastoPress" icon="sap-icon://database"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Resumen">
+                    <f:formElements>
+                        <f:FormElement label="Resumen de la propuesta">
+                            <f:fields>
+                                <TextArea rows="3" value="{AFEModel>/ResumenPropuesta}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Años vida útil estimados">
+                            <f:fields>
+                                <StepInput value="{AFEModel>/AniosVidaUtilEstimados}" required="true" min="0" valueStateText="{i18n>DatosGenerales.AniosVidaUtilEstimadosValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_AniosVidaUtilEstimados}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Fecha estimada de cierre">
+                            <f:fields>
+                                <DatePicker value="{path:'AFEModel>/FechaEstimadaCierre', type:'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}" required="true" valueStateText="{i18n>DatosGenerales.FechaEstimadaCierreValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_FechaEstimadaCierre}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Retorno de la inversión (%)">
+                            <f:fields>
+                                <Input value="{AFEModel>/RetornoInversion}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Incluye reemplazos mayores a U$S 50.000,00">
+                            <f:fields>
+                                <Switch customTextOn="Si" customTextOff="No" state="{AFEModel>/IncluyeReemplazos}" change=".handleChangeIncluyeReemplazos"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Observaciones">
+                    <f:formElements>
+                        <f:FormElement label="Observaciones">
+                            <f:fields>
+                                <TextArea rows="6" value="{AFEModel>/Observacion}"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+            </f:formContainers>
+        </f:Form>
+    </Panel>
+    <!-- Modo visualización -->
+    <Panel visible="{= ${appModel>/Modo} === 'visualizacion' ? true : false }">
+        <f:Form editable="true">
+            <f:layout>
+                <f:ResponsiveGridLayout labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2" singleContainerFullSize="false"/>
+            </f:layout>
+            <f:formContainers>
+                <f:FormContainer title="Datos generales">
+                    <f:formElements>
+                        <f:FormElement label="AFE Complementario">
+                            <f:fields>
+                                <Switch enabled="false" customTextOn="Si" customTextOff="No" state="{AFEModel>/Complementario}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Nro. de revisión">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/NumeroRevision}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Fecha de emisión">
+                            <f:fields>
+                                <Input enabled="false" value="{path: 'AFEModel>/FechaEmision', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Referentes">
+                    <f:formElements>
+                        <f:FormElement label="Iniciador">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Creador}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Responsable">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Responsable}" />
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Jefe">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Jefe}" />
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Gerente aprobador">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Gerente}"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Datos de la inversión">
+                    <f:formElements>
+                        <f:FormElement label="Sector de origen">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/SectorOrigen}" />
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Período desde/hasta">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/PeriodoDesde}">
+                                    <layoutData>
+                                        <l:GridData span="XL4 L4 M6 S6"/>
+                                    </layoutData>
+                                </Input>
+                                <Input enabled="false" value="{AFEModel>/PeriodoHasta}">
+                                    <layoutData>
+                                        <l:GridData span="XL4 L4 M6 S6"/>
+                                    </layoutData>
+                                </Input>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Imputado a">
+                            <f:fields>
+                                <Input enabled="false" value="{path: 'AFEModel>/ImputadoA', formatter: '.formatter.getImputacionText'}" />
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Título">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Titulo}" />
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Categoría/Código">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Categoria}">
+                                    <layoutData>
+                                        <l:GridData span="XL4 L4 M6 S6"/>
+                                    </layoutData>
+                                </Input>
+                                <Input enabled="false" value="{AFEModel>/Codigo}">
+                                    <layoutData>
+                                        <l:GridData span="XL4 L4 M6 S6"/>
+                                    </layoutData>
+                                </Input>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Tipo de inversión">
+                            <f:fields>
+                                <RadioButtonGroup>                
+                                    <RadioButton text="Mant. de capital" enabled="false" selected="{AFEModel>/TipoInversionMantCapital}"/>
+                                    <RadioButton text="Crec. o rentabilidad" enabled="false" selected="{AFEModel>/TipoInversionCrecRentabilidad}"/>
+                                </RadioButtonGroup>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Montos">
+                    <f:formElements>
+                        <f:FormElement label="Monto presupuestado">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/MontoPresupuestado}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Monto solicitado/Moneda">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/MontoSolicitado}">
+                                    <layoutData>
+                                        <l:GridData span="XL6 L6 M9 S9"/>
+                                    </layoutData>
+                                </Input>
+                                <Input enabled="false" value="{AFEModel>/MontoSolicitadoMoneda}">
+                                    <layoutData>
+                                        <l:GridData span="XL2 L2 M3 S3"/>
+                                    </layoutData>
+                                </Input>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Monto en moneda origen/Moneda">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/MontoMonedaOrigen}">
+                                    <layoutData>
+                                        <l:GridData span="XL6 L6 M9 S9"/>
+                                    </layoutData>
+                                </Input>
+                                <Input enabled="false" value="{AFEModel>/MontoMonedaOrigenMoneda}">
+                                    <layoutData>
+                                        <l:GridData span="XL2 L2 M3 S3"/>
+                                    </layoutData>
+                                </Input>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Diferencia">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Diferencia}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Monto que compensa">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/MontoCompensado}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Desvío">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/Desvio}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Descomposición del gasto">
+                            <f:fields>
+                                <Button text="Visualizar" width="50%" press=".handleDescomposicionGastoPress" icon="sap-icon://database"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Resumen">
+                    <f:formElements>
+                        <f:FormElement label="Resumen de la propuesta">
+                            <f:fields>
+                                <TextArea enabled="false" rows="3" value="{AFEModel>/ResumenPropuesta}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Años vida útil estimados">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/AniosVidaUtilEstimados}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Fecha estimada de cierre">
+                            <f:fields>
+                                <Input enabled="false" value="{path: 'AFEModel>/FechaEstimadaCierre', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Retorno de la inversión (%)">
+                            <f:fields>
+                                <Input enabled="false" value="{AFEModel>/RetornoInversion}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="Incluye reemplazos mayores a U$S 50.000,00">
+                            <f:fields>
+                                <Switch enabled="false" customTextOn="Si" customTextOff="No" state="{AFEModel>/IncluyeReemplazos}"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer title="Observaciones">
+                    <f:formElements>
+                        <f:FormElement label="Observaciones">
+                            <f:fields>
+                                <TextArea enabled="false" rows="3" value="{AFEModel>/Observacion}"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+            </f:formContainers>
+        </f:Form>
+    </Panel>
+</core:FragmentDefinition>
