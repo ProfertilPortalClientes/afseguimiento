@@ -3,17 +3,17 @@
   "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^/sap/(.*)$",
-      "target": "/sap/$1",
-      "destination": "BACKEND_SAP_CLONING",
-      "authenticationType": "xsuaa",
-      "csrfProtection": false
+        "authenticationType": "none",
+        "csrfProtection": false,
+        "source": "^/sap/opu/odata/sap/(.*)",
+        "destination": "BACKEND_SAP"
     },
     {
-      "authenticationType": "none",
-      "source": "^/SDM_API/(.*)$",
-      "target": "/$1",
-      "destination": "SDM_API"
+      "source": "^sap/(.*)$",
+      "target": "sap/$1",
+      "destination": "BACKEND_SAP",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
     },
     {
       "source": "^/resources/(.*)$",
@@ -26,6 +26,12 @@
       "target": "/test-resources/$1",
       "authenticationType": "none",
       "destination": "ui5"
+    },
+    {
+      "authenticationType": "none",
+      "source": "^/SDM_API/(.*)$",
+      "target": "/$1",
+      "destination": "SDM_API"
     },
     {
       "source": "^(.*)$",

@@ -44,7 +44,7 @@
     },
     "sap.cloud": {
         "public": true,
-        "service": "profertil-afeseguimiento"
+        "service": "afeseguimiento"
     },
     "sap.ui": {
         "technology": "UI5",
