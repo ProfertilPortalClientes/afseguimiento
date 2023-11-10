@@ -94,7 +94,9 @@
             "": {
                 "dataSource": "mainService",
                 "preload": true,
-                "settings": {}
+                "settings": {
+                    "defaultBindingMode": "TwoWay"
+                }
             },
             "adjuntosModel": {
                 "type": "sap.ui.model.json.JSONModel",
@@ -140,6 +142,13 @@
                     "target": [
                         "Detalle"
                     ]
+                },
+                {
+                    "name": "Borrador",
+                    "pattern": "Borrador/{AFE}",
+                    "target": [
+                        "Borrador"
+                    ]
                 }
             ],
             "targets": {
@@ -163,6 +172,13 @@
                     "clearControlAggregation": false,
                     "viewId": "Detalle",
                     "viewName": "Detalle"
+                },
+                "Borrador": {
+                    "viewType": "XML",
+                    "transition":"slide",
+                    "clearControlAggregation": false,
+                    "viewId": "Borrador",
+                    "viewName": "Borrador"
                 }
             }
         }

@@ -11,29 +11,17 @@ sap.ui.define([
     function (BaseController, History, MessageBox, models, formatter) {
         "use strict";
         var that;
-        return BaseController.extend("profertil.afeseguimiento.controller.Creacion", {
+        return BaseController.extend("profertil.afeseguimiento.controller.Borrador", {
             formatter: formatter,
 
             onInit: function () {
 
                 that = this;
+
                 that.oGlobalBusyDialog = new sap.m.BusyDialog();
-
-                // inicializar vista
-                sap.ui.core.UIComponent.getRouterFor(this).getRoute("Creacion").attachPatternMatched(this._onObjectMatched, this);
-
-            },
-
-            _onObjectMatched: function (oEvent) {
-
-                this.getView().byId("idIconTabBar").setSelectedKey("DatosGenerales");
 
                 // setear modelo que guarda los datos para la creación de la AFE
                 this.getOwnerComponent().setModel(models.createAFEModel(), "AFEModel");
-
-                var sCreador = this.getOwnerComponent().getModel("loginModel").getProperty("/DatosUsuario/Usuario");
-
-                this.getOwnerComponent().getModel("AFEModel").setProperty("/Creador", sCreador);
 
                 // setear modelo que guarda los datos para los value help
                 this.getOwnerComponent().setModel(models.createValueHelpModel(), "valueHelpModel");
@@ -41,10 +29,46 @@ sap.ui.define([
                 // seteat modelo para controlar los estados de validaciones
                 this.getOwnerComponent().setModel(models.createEstadosValidacionesModel(), "estadosValidaciones");
 
-                // setear modo creación                
-                (this.getOwnerComponent().getModel("appModel")) ? this.getOwnerComponent().getModel("appModel").setProperty("/Modo", "creacion") : this.getOwnerComponent().setModel(models.createAppModel("creacion"), "appModel");
+                // inicializar vista
+                sap.ui.core.UIComponent.getRouterFor(this).getRoute("Borrador").attachPatternMatched(this._onObjectMatched, this);
+
+                // setear modo visualización             
+                (this.getOwnerComponent().getModel("appModel")) ? this.getOwnerComponent().getModel("appModel").setProperty("/Modo", "borrador") : this.getOwnerComponent().setModel(models.createAppModel("borrador"), "appModel");
 
                 this.initDataValueHelps();
+            },
+
+            _onObjectMatched: function (oEvent) {
+                this.AFE = oEvent.getParameter("arguments").AFE;
+                this.getView().getModel().metadataLoaded().then(function () {
+                    var sPath = "/" + that.getOwnerComponent().getModel().createKey("OrdenInversionSet", {
+                        AFE: that.AFE
+                    });
+                    this.getAFE(sPath);
+                    // this.getAFEAdjuntos(that.AFE);
+                }.bind(this));
+            },
+
+            getAFE: function (sPath) {
+
+                that.oGlobalBusyDialog.setText("Obteniendo AFE. Aguarde por favor");
+                that.oGlobalBusyDialog.open();
+
+                // leer AFE	
+                this.getOwnerComponent().getModel().read(sPath, {
+                    success: function (oData, oResponse) {
+                        that.oGlobalBusyDialog.close();
+                        var oAFE = oData;
+                        this.getOwnerComponent().getModel("AFEModel").setData(oAFE);
+                        // this.initDataValueHelps();
+                        this.setPreviousData(oAFE);
+                        this.getAFEAdjuntos(that.AFE);
+                        this.getView().byId("idUploaderBorrador").setEnabled(true);
+                    }.bind(this),
+                    error: function (oError) {
+                        that.oGlobalBusyDialog.close();
+                    }.bind(this)
+                });
 
             },
 
@@ -88,23 +112,23 @@ sap.ui.define([
             },
 
             getValueHelpGerente: function (sResponsable) {
-                if (!sResponsable) {
-                    return;
-                }
-                var sPath = this.getOwnerComponent().getModel().createKey("/DatosResponsableSet", {
-                    "Responsable": sResponsable
-                });
-                that.oGlobalBusyDialog.setText("Obteniendo el gerente");
-                that.oGlobalBusyDialog.open();
-                this.getOwnerComponent().getModel().read(sPath, {
-                    success: function (oData) {
-                        that.oGlobalBusyDialog.close();
-                        this.getOwnerComponent().getModel("AFEModel").setProperty("/Gerente", oData.Gerente);
-                    }.bind(this),
-                    error: function (oError) {
-                        that.oGlobalBusyDialog.close();
-                    }.bind(this)
-                });
+                    if (!sResponsable) {
+                        return;
+                    }
+                    var sPath = this.getOwnerComponent().getModel().createKey("/DatosResponsableSet", {
+                        "Responsable": sResponsable
+                    });
+                    this.oGlobalBusyDialog.setText("Obteniendo el gerente");
+                    this.oGlobalBusyDialog.open();
+                    this.getOwnerComponent().getModel().read(sPath, {
+                        success: function (oData) {
+                            this.oGlobalBusyDialog.close();
+                            this.getOwnerComponent().getModel("AFEModel").setProperty("/Gerente", oData.Gerente);
+                        }.bind(this),
+                        error: function (oError) {
+                            that.oGlobalBusyDialog.close();
+                        }.bind(this)
+                    });
             },
 
             getValueHelpImputacion: function () {
@@ -296,8 +320,10 @@ sap.ui.define([
                 return bValido;
             },
 
-            uploadAdjuntos: function (psAFE) {
+            uploadAdjuntos: function (psAFE,afePrevia) {
 
+                that.oGlobalBusyDialog.setText("Subiendo documentos adjuntos");
+                that.oGlobalBusyDialog.open();
                 // obtener lista de archivos
                 var aFiles = that.getView().getModel("AFEModel").getProperty("/AdjuntosF");
 
@@ -314,7 +340,7 @@ sap.ui.define([
                     if (aFiles[i]) {
                         this.readAsDataURL(aFiles[i]);
                     } else {
-                        that.agregarAdjuntos(aFiles, psAFE);
+                        that.agregarAdjuntos(aFiles, afePrevia);
                     }
                 };
 
@@ -322,22 +348,58 @@ sap.ui.define([
                 if (aFiles.length > 0) {
                     oReader.readAsDataURL(aFiles[i]);
                 } else {
-                    that.agregarAdjuntos([], psAFE);
+                    that.agregarAdjuntos([], afePrevia);
                 }
             },
 
             agregarAdjuntos: function (paFiles, psAFE) {
-                if (paFiles.length > 0) {
+                var aFilesAgregados = that.getView().getModel("AFEModel").getProperty("/Adjuntos");
+                if (aFilesAgregados != undefined) {
+                    this.agregarAdjuntosCreados(paFiles,psAFE);
+                } else {
+                    this.agregarAdjuntosNuevos(paFiles,psAFE);
+                }
+            },
+
+            agregarAdjuntosCreados: function(paFiles,psAFE) {
+                    if (paFiles.length > 0) {
                     var aPromises = [];
-                    this.createFolder(psAFE)
+                    this.getClientFolder(psAFE)
                         .catch(() => {
+                            that.oGlobalBusyDialog.close();
                             sap.m.MessageBox.error("Error en la subida de los adjuntos al repositorio. Contacte a su administrador", {
                                 onClose: function (sAction) {
                                     that.handleNavBack();
                                 }
                             });
                         })
-                        .then(() => {
+                        .then((response) => {
+                            that.getObjIdFolder(response,that.AFE,psAFE);
+                            var sPathFolder = "/" + psAFE;
+                            for (var i = 0; i < paFiles.length; i++) {
+                                var file = paFiles[i];
+                                var filename = paFiles[i].name;
+                                aPromises.push(this.uploadSingleFilePromise(file, filename, sPathFolder));
+                            }
+                            Promise.all(aPromises).then(that.onSuccessUpload.bind(that), that.onErrorUpload.bind(that));
+                        });
+                }
+            },
+
+            agregarAdjuntosNuevos: function(paFiles,psAFE) {
+                if (paFiles.length > 0) {
+                    var aPromises = [];
+                    this.createFolder(psAFE)
+                        .catch(() => {
+                            that.oGlobalBusyDialog.close();
+                            sap.m.MessageBox.error("Error en la subida de los adjuntos al repositorio. Contacte a su administrador", {
+                                onClose: function (sAction) {
+                                    that.handleNavBack();
+                                }
+                            });
+                        })
+                        .then((response) => {
+                            that.getObjIdFolder(response,that.AFE,psAFE);
                             var sPathFolder = "/" + psAFE;
                             for (var i = 0; i < paFiles.length; i++) {
                                 var file = paFiles[i];
@@ -350,14 +412,21 @@ sap.ui.define([
             },
 
             onSuccessUpload: function (paResultados) {
-                sap.m.MessageBox.success("Adjuntos subidos correctamente", {
-                    onClose: function (sAction) {
-                        that.handleNavBack();
-                    }
-                });
+                var isNewAFE = that.getManifestModel("adjuntosModel").getProperty("/isNewAFE");
+                if (isNewAFE) {
+                    that.renameFolder();
+                } else {
+                    that.oGlobalBusyDialog.close();
+                    sap.m.MessageBox.success("Adjuntos subidos correctamente", {
+                        onClose: function (sAction) {
+                            that.handleNavBack();
+                        }
+                    });
+                }
             },
 
             onErrorUpload: function (poError) {
+                that.oGlobalBusyDialog.close();
                 sap.m.MessageBox.error("Error en la subida de los adjuntos al repositorio. Contacte a su administrador", {
                     onClose: function (sAction) {
                         that.handleNavBack();
@@ -366,9 +435,9 @@ sap.ui.define([
             },
 
             handleUploadAdjunto: function (oEvent) {
-                var oUploader = that.getView().byId("idUploader");
+                var oUploader = that.getView().byId("idUploaderBorrador");
                 var aFiles = jQuery.sap.domById(oUploader.getId() + "-fu").files;
-                var aFilesAgregados = that.getView().getModel("AFEModel").getProperty("/Adjuntos");
+                var aFilesAgregados = that.getView().getModel("AFEModel").getProperty("/AdjuntosLocal");
                 var aFilteredFiles = [];
                 var sPeso = 0;
                 var aAdjuntos = [];
@@ -415,17 +484,24 @@ sap.ui.define([
                         Extension: sExtension
                     });
                 }
-                that.getView().getModel("AFEModel").setProperty("/Adjuntos", aAdjuntos);
+                // that.getView().getModel("AFEModel").setProperty("/Adjuntos", aAdjuntos);
+                that.getView().getModel("AFEModel").setProperty("/AdjuntosLocal", aAdjuntos);
                 that.getView().getModel("AFEModel").setProperty("/AdjuntosF", aFilesAgregados);
+                if (aFilesAgregados.length > 0) {
+                    this.getView().byId("idUploaderBorrador").setEnabled(false);
+                } else {
+                    this.getView().byId("idUploaderBorrador").setEnabled(true);
+                }
             },
 
             // Eliminar archivo listado
-            handleEliminarAdjunto: function (oEvent) {
+            handleEliminarAdjuntoLocal: function (oEvent) {
                 var oItem = oEvent.getSource().getParent();
                 var sIndex = oItem.getParent().indexOfItem(oItem);
-                var aAdjuntos = that.getView().getModel("AFEModel").getProperty("/Adjuntos");
+                var aAdjuntos = that.getView().getModel("AFEModel").getProperty("/AdjuntosLocal");
                 aAdjuntos.splice(sIndex, 1);
-                that.getView().getModel("AFEModel").setProperty("/Adjuntos", aAdjuntos);
+                that.getView().getModel("AFEModel").setProperty("/AdjuntosLocal", aAdjuntos);
+                this.getView().byId("idUploaderBorrador").setEnabled(true);
             },
 
             validacionesCreacionAFE: function () {
@@ -468,10 +544,11 @@ sap.ui.define([
                     })
                 });
                 oConfirmDialog.open();
-
             },
 
             crearAFE: function () {
+
+                this.getManifestModel("adjuntosModel").setProperty("/isNewAFE",true);
 
                 if (this.handleValidacionesCreacion()) {
                     sap.m.MessageBox.error("Complete los campos obligatorios");
@@ -484,8 +561,10 @@ sap.ui.define([
                 }
 
                 var oAFE = this.getOwnerComponent().getModel("AFEModel").getData();
-                var aAdjuntos = this.getOwnerComponent().getModel("AFEModel").getProperty("/Adjuntos");
+                var aAdjuntos = this.getOwnerComponent().getModel("AFEModel").getProperty("/AdjuntosLocal");
+                var aAdjuntosPrevios = this.getOwnerComponent().getModel("AFEModel").getProperty("/Adjuntos");
                 aAdjuntos = (aAdjuntos && aAdjuntos.length > 0) ? aAdjuntos : [];
+                aAdjuntosPrevios = (aAdjuntosPrevios && aAdjuntosPrevios.length > 0) ? aAdjuntosPrevios : [];
 
                 var oAFEDeep = {
                     AFE: "",
@@ -550,21 +629,34 @@ sap.ui.define([
                     success: function (oData) {
                         that.oGlobalBusyDialog.close();
                         var sAFE = oData.AFE;
+                        that.newAFE = oData.AFE;
 
                         if (sAFE) {
                             // si hay adjuntos subirlos al repositorio con 'Document service'
                             if (aAdjuntos.length > 0) {
+                                that.newAFE = sAFE;
                                 sap.m.MessageBox.success("AFE " + sAFE + " generada correctamente. Se realizará la subida de los adjuntos al repositorio", {
                                     onClose: function (sAction) {
-                                        that.uploadAdjuntos(sAFE);
+                                        that.uploadAdjuntos(sAFE,that.AFE);
                                     }
                                 });
                             } else {
-                                sap.m.MessageBox.success("AFE " + sAFE + " generada correctamente", {
-                                    onClose: function (sAction) {
-                                        that.handleNavBack();
-                                    }
-                                });
+                                if (aAdjuntosPrevios.length == 0) {
+                                    sap.m.MessageBox.success("AFE " + sAFE + " generada correctamente.", {
+                                        onClose: function (sAction) {
+                                            // that.handleNavBack();
+                                            that.deleteAFEPostBorrador(that.AFE);
+                                            // that.getDataNewFolder();
+                                        }
+                                    });
+                                } else {
+                                    sap.m.MessageBox.success("AFE " + sAFE + " generada correctamente. Se realizará la subida de los adjuntos al repositorio", {
+                                        onClose: function (sAction) {
+                                            // that.handleNavBack();
+                                            that.getDataNewFolder();
+                                        }
+                                    });
+                                }
                             }
                         }
                     }.bind(this),
@@ -730,7 +822,7 @@ sap.ui.define([
                 } else {
                     oModelEstadosValidaciones.setProperty("/DatosComplementarios_Variacion", "None");
                 }
-
+                debugger;
                 return bError;
             },
 
@@ -749,11 +841,11 @@ sap.ui.define([
                 } else {
                     oModelEstadosValidaciones.setProperty("/DatosGenerales_MontoSolicitado", "None");
                 }
+                debugger;
                 return bError;
             },
 
             handleChangeImputacion: function (oEvent) {
-                debugger;
                 var sImputacionKey = oEvent.getSource().getSelectedKey();
                 that.changeImputacion(sImputacionKey);
             },
@@ -841,7 +933,502 @@ sap.ui.define([
                     this.getOwnerComponent().getModel("AFEModel").setProperty("/InformeTecnicoDestino", "");
                     this.getOwnerComponent().getModel("AFEModel").setProperty("/InformeTecnicoCalculo", "");
                 }
+            },
+
+            handleUpdateAFEBorradorPress: function() {
+                var oConfirmDialog = new sap.m.Dialog({
+                    type: sap.m.DialogType.Message,
+                    title: "Confirmación",
+                    content: new sap.m.Text({
+                        text: "¿Está seguro que desea actualizar borrador de la orden de inversión?"
+                    }),
+                    beginButton: new sap.m.Button({
+                        type: sap.m.ButtonType.Emphasized,
+                        text: "Aceptar",
+                        press: function () {
+                            oConfirmDialog.close();
+                            that.onUpdateBorradorAFE();
+                        }.bind(this)
+                    }),
+                    endButton: new sap.m.Button({
+                        text: "Cancelar",
+                        press: function () {
+                            oConfirmDialog.close();
+                        }.bind(this)
+                    })
+                });
+                oConfirmDialog.open();
+            },
+
+            setPreviousData: function(aDato) {
+                this.getView().byId("sectorSelect").setValue(aDato.SectorOrigen);
+                // this.getView().byId("idTitulo").setValue(aDato.Titulo);
+                this.getView().byId("idResponsables").setValue(aDato.Responsable);
+                this.getView().byId("idJefe").setValue(aDato.Jefe);
+                // this.getView().byId("idImputado").setValue(this.changeImputacion(aDato.ImputadoA));
+                // this.changeImputacion(aDato.ImputadoA);
+            },
+
+            handleBorrarBorradorAFEPress: function(oEvent) {
+
+                var oConfirmDialog = new sap.m.Dialog({
+                    type: sap.m.DialogType.Message,
+                    title: "Confirmación",
+                    content: new sap.m.Text({
+                        text: "¿Está seguro que desea eliminar borrador AFE?"
+                    }),
+                    beginButton: new sap.m.Button({
+                        type: sap.m.ButtonType.Emphasized,
+                        text: "Aceptar",
+                        press: function () {
+                            oConfirmDialog.close();
+                            that.onBorrarAFE();
+                        }.bind(this)
+                    }),
+                    endButton: new sap.m.Button({
+                        text: "Cancelar",
+                        press: function () {
+                            oConfirmDialog.close();
+                        }.bind(this)
+                    })
+                });
+                oConfirmDialog.open();
+            },
+            
+            onBorrarAFE: function () {
+                // var oAFE = oEvent.getSource().getBindingContext("AFEModel").getObject();
+                that.oGlobalBusyDialog.setText("Eliminando borrador AFE y adjuntos");
+                that.oGlobalBusyDialog.open();
+                var oAFE = this.getOwnerComponent().getModel("AFEModel").getData();
+                var sPath = "/" + that.getOwnerComponent().getModel().createKey("OrdenInversionBorradorSet", {
+                    AFE: oAFE.AFE
+                });
+                var oModel = this.getOwnerComponent().getModel();
+                oModel.setUseBatch(false);
+                oModel.remove(sPath, {
+                    method:"DELETE",
+                    success: function (oData) {
+                        sap.m.MessageBox.success("Borrador AFE nro: " + oAFE.AFE + " eliminado con exito", {
+                            onClose: function (sAction) {
+                                that.getDataFolder(oAFE.AFE);
+                                // that.handleNavBack();
+                            }
+                        });
+                    }.bind(this),
+                    error: function (oError) {
+                        sap.m.MessageBox.error("Error al eliminar borrador AFE", {
+                            onClose: function (sAction) {
+                                that.oGlobalBusyDialog.close();
+                                that.handleNavBack();
+                            }
+                        });
+                    }.bind(this)
+                });
+            },
+
+            getAFEAdjuntos: function (psAFE) {
+                // var oTable = this.getView().byId("adjuntosTable");
+                var aAdjuntos = [];
+                var oModel = this.getManifestModel("adjuntosModel");
+                var oData = oModel.getData();
+                var sUrlFolder = oData.repoId + "/root" + "/" + psAFE;
+                var that = this;
+                this.getDataRepo(sUrlFolder)
+                    .then((response) => {
+                        aAdjuntos = that.getAdjuntos(response);
+                        if (aAdjuntos.length === 0) {
+                            // aAdjuntos = [{ "filename": "No se encontraron Adjuntos", "url": "", "objectId": "" }];
+                        }
+                        that.getOwnerComponent().getModel("AFEModel").setProperty("/Adjuntos", aAdjuntos);
+                        // oTable.setModel("AFEModel");
+                    }).catch(oError => {
+                        // aAdjuntos = [{ "filename": "No se encontraron Adjuntos", "url": "", "objectId": "" }];
+                        that.getManifestModel("adjuntosModel").setProperty("/adjuntos", aAdjuntos);
+                        // oTable.setModel("AFEModel");
+                    });
+            },
+
+            getAdjuntos: function (oResponse) {
+                var aAdjuntos = [];
+                for (var i = 0; i < oResponse.objects.length; i++) {
+                    var oFolderContent = {};
+                    oFolderContent = oResponse.objects[i].object.properties;
+                    var oAdjunto = {};
+                    oAdjunto = this.getAdjuntoProperties(oFolderContent);
+                    aAdjuntos.push(oAdjunto);
+                }
+                return aAdjuntos;
+            },
+
+            getAdjuntoProperties: function (oFolderContent) {
+                var oAdjunto = {};
+                oAdjunto.objectId = oFolderContent["cmis:objectId"].value;
+                oAdjunto.filename = oFolderContent["cmis:name"].value;
+                oAdjunto.url = this.getDMSUrl("/SDM_API/browser") + "/" + this.getManifestModel("adjuntosModel").getData().repoId + "/root" + "?objectId=" + oAdjunto.objectId + "&cmisSelector=content&download=attachment&filename=" + oAdjunto.filename;
+                return oAdjunto;
+
+            },
+
+            handleDescargarAdjunto: function (oEvent) {
+                var sUrl = oEvent.getSource().getBindingContext("AFEModel").getProperty("url");
+                if (sUrl !== "") {
+                    window.open(sUrl, "_self");
+                }    
+            },
+
+            handleEliminarAdjuntoSDM: function(oEvent) {
+                var docId = oEvent.getSource().getBindingContext("AFEModel").getProperty("objectId");
+                var oTable = this.getView().byId("adjuntosTable");
+                var aAdjuntos = [];
+                var oModel = this.getManifestModel("adjuntosModel");
+                var oData = oModel.getData();
+                var sPath = "/" + that.AFE
+                var sUrlFolder = oData.repoId + "/root" + "/" + that.AFE;
+
+                this.getDataRepo(sUrlFolder).
+                    then(response => {
+                        aAdjuntos = that.getAdjuntos(response);
+                        for (var i = 0; i < aAdjuntos.length; i++) {
+                            if (aAdjuntos[i].objectId == docId) {
+                                this._deleteFile(docId,sPath);
+                            }
+                        }
+                        // this.getModel("AFEModel").refresh(true);
+                        // that.getAFEAdjuntos(that.AFE);
+                    });
+            },
+
+            _deleteFile: function(docId,sPath) {
+            var data = new FormData();
+
+            var dataObject = {
+                "cmisaction": "delete",
+                "objectId": docId
+            };
+
+            var keys = Object.keys(dataObject);
+
+            for (var key of keys) {
+                data.append(key, dataObject[key]);
             }
+            return $.ajax({
+                url: this.getManifestModel("adjuntosModel").getProperty("/url"),
+                type: "POST",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (oData, oResponse) {
+                    that.getAFEAdjuntos(that.AFE);
+                },
+                error: function (oResponse) {
+                    that.oGlobalBusyDialog.close();
+                    console.Console(oResponse);
+                }
+            });
+            },
+
+            onUpdateBorradorAFE: function() {
+                this.getManifestModel("adjuntosModel").setProperty("/isNewAFE",false);
+                var oAFE = this.getOwnerComponent().getModel("AFEModel").getData();
+                var aAdjuntosF = this.getOwnerComponent().getModel("AFEModel").getProperty("/AdjuntosLocal");
+                aAdjuntosF = (aAdjuntosF && aAdjuntosF.length > 0) ? aAdjuntosF : [];
+
+                var oAFEDeep = {
+                    AFE: oAFE.AFE,
+                    Estado: (oAFE.Creador === oAFE.Responsable) ? "3" : "2", // '3' = jefe / '2' = responsable
+                    Complementario: oAFE.Complementario,
+                    NumeroRevision: oAFE.NumeroRevision.toString(),
+                    FechaEmision: oAFE.FechaEmision,
+                    Creador: "",
+                    Responsable: oAFE.Responsable,
+                    Jefe: oAFE.Jefe,
+                    Gerente: oAFE.Gerente,
+                    SectorOrigen: oAFE.SectorOrigen,
+                    PeriodoDesde: oAFE.PeriodoDesde,
+                    PeriodoHasta: oAFE.PeriodoHasta,
+                    ImputadoA: oAFE.ImputadoA,
+                    Titulo: oAFE.Titulo,
+                    Categoria: oAFE.Categoria,
+                    Codigo: oAFE.Codigo,
+                    TipoInversionMantCapital: oAFE.TipoInversionMantCapital,
+                    TipoInversionCrecRentabilidad: oAFE.TipoInversionCrecRentabilidad,
+                    MontoPresupuestado: oAFE.MontoPresupuestado,
+                    MontoSolicitado: oAFE.MontoSolicitado,
+                    MontoSolicitadoMoneda: oAFE.MontoSolicitadoMoneda,
+                    MontoMonedaOrigen: oAFE.MontoMonedaOrigen,
+                    MontoMonedaOrigenMoneda: oAFE.MontoMonedaOrigenMoneda,
+                    Diferencia: oAFE.Diferencia,
+                    MontoCompensado: oAFE.MontoCompensado,
+                    Desvio: oAFE.Desvio,
+                    DescomposicionGasto1: oAFE.DescomposicionGasto1.toString(),
+                    DescomposicionGasto2: oAFE.DescomposicionGasto2.toString(),
+                    DescomposicionGasto3: oAFE.DescomposicionGasto3.toString(),
+                    DescomposicionGasto4: oAFE.DescomposicionGasto4.toString(),
+                    DescomposicionGasto5: oAFE.DescomposicionGasto5.toString(),
+                    ResumenPropuesta: oAFE.ResumenPropuesta,
+                    AniosVidaUtilEstimados: oAFE.AniosVidaUtilEstimados.toString(),
+                    FechaEstimadaCierre: oAFE.FechaEstimadaCierre,
+                    RetornoInversion: oAFE.RetornoInversion,
+                    IncluyeReemplazos: oAFE.IncluyeReemplazos,
+                    Observacion: oAFE.Observacion,
+                    InformeTecnicoDescripcion: (oAFE.IncluyeReemplazos) ? oAFE.InformeTecnicoDescripcion : "",
+                    InformeTecnicoDestino: (oAFE.IncluyeReemplazos) ? oAFE.InformeTecnicoDestino : "",
+                    InformeTecnicoCalculo: (oAFE.IncluyeReemplazos) ? oAFE.InformeTecnicoCalculo : "",
+                    DatosComplementariosObjetivo: oAFE.DatosComplementariosObjetivo,
+                    DatosComplementariosJustificacion: oAFE.DatosComplementariosJustificacion,
+                    DatosComplementariosAlcance: oAFE.DatosComplementariosAlcance,
+                    DatosComplementariosAntecedentes: oAFE.DatosComplementariosAntecedentes,
+                    DatosComplementariosEstimacion: oAFE.DatosComplementariosEstimacion,
+                    DatosComplementariosAlternativas: oAFE.DatosComplementariosAlternativas,
+                    DatosComplementariosVariacion: oAFE.DatosComplementariosVariacion,
+                    DatosComplementariosImpactoAmbiental: oAFE.DatosComplementariosImpactoAmbiental,
+                    DatosComplementariosCronograma: oAFE.DatosComplementariosCronograma,
+                }
+
+                that.oGlobalBusyDialog.setText("Generando borrador AFE. Aguarde por favor");
+                that.oGlobalBusyDialog.open();
+
+                this.getOwnerComponent().getModel().bUseBatch = false;
+
+                var sPath = "/" + that.getOwnerComponent().getModel().createKey("OrdenInversionBorradorSet", {
+                    AFE: that.AFE
+                });
+
+                this.getOwnerComponent().getModel().update(sPath, oAFEDeep, {
+                    success: function (oData) {
+                        that.oGlobalBusyDialog.close();
+                        // var sAFE = oData.AFE;
+                        if (that.AFE) {
+                            // si hay adjuntos subirlos al repositorio con 'Document service'
+                            if (aAdjuntosF.length > 0) {
+                                sap.m.MessageBox.success("Borrador AFE " + that.AFE + " actualizado correctamente. Se realizará la subida de los adjuntos al repositorio", {
+                                    onClose: function (sAction) {
+                                        that.uploadAdjuntos(that.AFE,that.AFE);
+                                    }
+                                });
+                            } else {
+                                sap.m.MessageBox.success("Borrador AFE " + that.AFE + " generada correctamente", {
+                                    onClose: function (sAction) {
+                                        that.handleNavBack();
+                                    }
+                                });
+                            }
+                        }
+                    }.bind(this),
+                    error: function (oError) {
+                        if (oError.responseText) {
+                            var oMensaje = JSON.parse(oError.responseText);                          
+                        }
+                        var sMensaje = oMensaje.error.message.value || "Error al crear la orden de inversión";
+                        sap.m.MessageBox.error(sMensaje);
+                        that.oGlobalBusyDialog.close();
+                    }.bind(this)
+                });
+
+
+            },
+
+            pruebaRenameFolder: function() {
+            var data = new FormData();
+
+            var dataObject = {
+                "cmisaction": "update",
+                "objectId": "Z_naU7bvOll1KDCUnUZC2VD8BkA-H5VM05E9Uv63soI",
+                "propertyId[0]": "cmis:name",
+                "propertyValue[0]": "9000000001"
+            };
+
+            var keys = Object.keys(dataObject);
+
+            for (var key of keys) {
+                data.append(key, dataObject[key]);
+            }
+            // var urlM = this.getDMSUrl("/SDM_API/browser") + "/" + this._dmsUrl;
+            return $.ajax({
+                url: this.getManifestModel("adjuntosModel").getProperty("/url"),
+                type: "POST",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (oData, oResponse) {
+                    console.log(oData);
+                    console.log(oResponse);
+                },
+                error: function (oResponse) {
+                    console.Console(oResponse);
+                }
+            });
+            },
+
+            getObjIdFolder: function(oResponse,afe,psAFE) {
+                var objIdFolderArr = [];
+                var oFolder = {};
+                var aFilesAgregados = that.getView().getModel("AFEModel").getProperty("/Adjuntos");
+                if (aFilesAgregados != undefined) {
+                    for (var i = 0; i < oResponse.objects.length; i++) {
+                        oFolder = oResponse.objects[i].object.properties;
+                        var objIdFolder = {};
+                        if (oFolder["cmis:name"].value == afe) {
+                            that.getManifestModel("adjuntosModel").setProperty("/folderObjId",oFolder["cmis:objectId"].value);
+                        }
+                    }
+                } else {
+                    oFolder = oResponse.properties;
+                    if (oFolder != undefined) {
+                        that.getManifestModel("adjuntosModel").setProperty("/folderObjId",oFolder["cmis:objectId"].value);
+                    } else {
+                    // that.getManifestModel("adjuntosModel").setProperty("/folderObjId",oFolder["cmis:objectId"].value);
+                        that.getManifestModel("adjuntosModel").setProperty("/folderObjId",null);
+                    }
+                }
+            },
+
+            renameFolder: function() {
+            var data = new FormData();
+            var objIdFolder = this.getManifestModel("adjuntosModel").getProperty("/folderObjId");
+            var sNewAFE = this.newAFE;
+
+            var dataObject = {
+                "cmisaction": "update",
+                "objectId": objIdFolder,
+                "propertyId[0]": "cmis:name",
+                "propertyValue[0]": sNewAFE
+            };
+
+            var keys = Object.keys(dataObject);
+
+            for (var key of keys) {
+                data.append(key, dataObject[key]);
+            }
+            // var urlM = this.getDMSUrl("/SDM_API/browser") + "/" + this._dmsUrl;
+            return $.ajax({
+                url: this.getManifestModel("adjuntosModel").getProperty("/url"),
+                type: "POST",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (oData, oResponse) {
+                    that.deleteAFEPostBorrador(that.AFE);
+                },
+                error: function (oResponse) {
+                    that.oGlobalBusyDialog.close();
+                    console.Console(oResponse);
+                }
+            });
+            },
+
+            deleteAFEPostBorrador: function(sAFE) {
+                var text = "";
+                var sPath = "/" + that.getOwnerComponent().getModel().createKey("OrdenInversionBorradorSet", {
+                    AFE: sAFE
+                });
+                var oModel = this.getOwnerComponent().getModel();
+                var aAdjuntos = this.getOwnerComponent().getModel("AFEModel").getProperty("/AdjuntosLocal");
+                var aAdjuntosPrevios = this.getOwnerComponent().getModel("AFEModel").getProperty("/Adjuntos");
+                aAdjuntos = (aAdjuntos && aAdjuntos.length > 0) ? aAdjuntos : [];
+                aAdjuntosPrevios = (aAdjuntosPrevios && aAdjuntosPrevios.length > 0) ? aAdjuntosPrevios : [];
+
+                if (aAdjuntos.length == 0 && aAdjuntosPrevios.length == 0) {
+                    text = "Presione para continuar";
+                } else {
+                    text = "Adjuntos subidos correctamente";
+                }
+
+                oModel.setUseBatch(false);
+                oModel.remove(sPath, {
+                    method:"DELETE",
+                    success: function (oData) {
+                        that.oGlobalBusyDialog.close();
+                        sap.m.MessageBox.success(text, {
+                            onClose: function (sAction) {
+                                that.handleNavBack();
+                            }
+                        });
+                    }.bind(this),
+                    error: function (oError) {
+                        that.oGlobalBusyDialog.close();
+                        sap.m.MessageBox.error("Error al eliminar borrador AFE", {
+                            onClose: function (sAction) {
+                                that.handleNavBack();
+                            }
+                        });
+                    }.bind(this)
+                });
+            },
+
+            getDataNewFolder: function(psAFE) {
+                that.oGlobalBusyDialog.setText("Subiendo documentos adjuntos");
+                that.oGlobalBusyDialog.open();
+                this.getClientFolder(psAFE)
+                    .catch(() => {
+                        that.oGlobalBusyDialog.close();
+                        // sap.m.MessageBox.error("Error en la subida de los adjuntos al repositorio. Contacte a su administrador", {
+                        //     onClose: function (sAction) {
+                        //         that.handleNavBack();
+                        //     }
+                        // });
+                        that.oGlobalBusyDialog.close();
+                        console.log("error lectura folder MDS");
+                    })
+                    .then((response) => {
+                        that.getObjIdFolder(response,that.AFE,psAFE);
+                        that.renameFolder();
+                    });
+            },
+
+            getDataFolder: function(psAFE) {
+                this.getClientFolder(psAFE)
+                    .catch(() => {
+                        that.oGlobalBusyDialog.close();
+                        that.handleNavBack();
+                        console.log("error lectura folder MDS");
+                    })
+                    .then((response) => {
+                        that.getObjIdFolder(response,psAFE,that.AFE);
+                        if (that.getManifestModel("adjuntosModel").getProperty("/folderObjId") != null) {
+                            that.deleteFolderTree(psAFE);
+                        } else {
+                            that.oGlobalBusyDialog.close();
+                            that.handleNavBack();
+                        }
+                    });
+            },
+
+            deleteFolderTree: function(psAFE) {
+                var data = new FormData();
+                var objIdFolder = this.getManifestModel("adjuntosModel").getProperty("/folderObjId");
+    
+                var dataObject = {
+                    "cmisaction": "deleteTree",
+                    "objectId": objIdFolder,
+                    "allVersions": false,
+                    "continueOnFailure": false
+                };
+    
+                var keys = Object.keys(dataObject);
+    
+                for (var key of keys) {
+                    data.append(key, dataObject[key]);
+                }
+                // var urlM = this.getDMSUrl("/SDM_API/browser") + "/" + this._dmsUrl;
+                return $.ajax({
+                    url: this.getManifestModel("adjuntosModel").getProperty("/url"),
+                    type: "POST",
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    success: function (oData, oResponse) {
+                        that.oGlobalBusyDialog.close();
+                        that.handleNavBack();
+                    },
+                    error: function (oResponse) {
+                        that.oGlobalBusyDialog.close();
+                        that.handleNavBack();
+                        console.Console(oResponse);
+                    }
+                });
+                },
+            
 
         });
     });

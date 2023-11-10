@@ -1,0 +1,102 @@
+<mvc:View xmlns="sap.m"
+    xmlns:semantic="sap.f.semantic"
+    xmlns:core="sap.ui.core"
+    xmlns:footerbar="sap.ushell.ui.footerbar"
+    xmlns:mvc="sap.ui.core.mvc" controllerName="profertil.afeseguimiento.controller.Borrador">
+    <App>
+        <pages>
+            <Page id="borradorPage" busy="{detailView>/busy}" busyIndicatorDelay="{detailView>/delay}" showFooter="true">
+                <ObjectHeader
+                    id="borradorPage2"
+		            binding="{AFEModel>/AFE}"
+                    fullScreenOptimized="true"
+                    title="{i18n>Borrador.title} - {AFEModel>/AFE}"
+                    titleActive="false">
+                    <attributes>
+                        <ObjectAttribute title="Fecha de creación" text="{path: 'AFEModel>/FechaEmision', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}"/>
+                        <ObjectAttribute title="Usuario creador" text="{AFEModel>/Creador}"/>
+                            <!-- <ObjectStatus
+                                title=""
+                                text="{path: 'AFEModel>/Estado', formatter: '.formatter.getStatusText'}"
+                                state="Warning"/> -->
+                    </attributes>
+                    <statuses>
+                        <ObjectStatus
+                                title=""
+                                text="{path: 'AFEModel>/Estado', formatter: '.formatter.getStatusText'}"
+                                state="Warning"/>
+                    </statuses>
+                </ObjectHeader>
+                <content>
+                    <IconTabBar id="idIconTabBarBorrador" select=".onFilterSelect" class="sapUiResponsiveContentPadding" expandable="false" backgroundDesign="Transparent" headerBackgroundDesign="Transparent" tabDensityMode="{= !${device>/system/phone} ? 'Cozy' : 'Compact' }">
+                        <items>
+                            <IconTabFilter icon="sap-icon://form" text="{i18n>BorradorTabFilterDatosGenerales.text}" key="DatosGenerales" design="Horizontal">
+                                <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.DatosGenerales" type="XML"/>
+                            </IconTabFilter>
+                            <IconTabSeparator visible="{= !${device>/system/phone} }"/>
+                            <IconTabFilter icon="sap-icon://settings" text="{i18n>BorradorTabFilterInformeTecnico.text}" key="InformeTecnico" design="Horizontal">
+                                <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.InformeTecnico" type="XML"/>
+                            </IconTabFilter>
+                            <IconTabSeparator visible="{= !${device>/system/phone} }"/>
+                            <IconTabFilter icon="sap-icon://add-product" text="{i18n>BorradorTabFilterDatosComplementarios.text}" key="DatosComplementarios" design="Horizontal">
+                                <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.DatosComplementarios" type="XML"/>
+                            </IconTabFilter>
+                            <IconTabSeparator visible="{= !${device>/system/phone} }"/>
+                            <IconTabFilter icon="sap-icon://attachment" text="{i18n>BorradorTabFilterAdjuntos.text}" key="Adjuntos" design="Horizontal">
+                                <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.Adjuntos" type="XML"/>
+                            </IconTabFilter>
+                        </items>
+                    </IconTabBar>
+                </content>
+                <footer>
+                    <OverflowToolbar>
+                        <content>
+                            <ToolbarSpacer/>
+                            <Button text="{i18n>BorradorBotonDeleteAFE.text}" icon="sap-icon://delete" type="Emphasized" press=".handleBorrarBorradorAFEPress"/>
+                            <Button text="{i18n>BorradorBotonCreacionAFE.text}" icon="sap-icon://create-form" type="Emphasized" press=".handleCreacionAFEPress"/>
+                            <Button text="{i18n>BorradorBotonBorradorAFE.text}" icon="sap-icon://create-form" type="Emphasized" press=".handleUpdateAFEBorradorPress"/>
+                        </content>
+                    </OverflowToolbar>
+                </footer>
+            </Page>
+        </pages>
+    </App>
+
+
+    <!-- <semantic:SemanticPage id="borradorPage" busy="{detailView>/busy}" busyIndicatorDelay="{detailView>/delay}" showFooter="true">
+        <semantic:titleHeading>
+            <Title text="{i18n>Borrador.title} - {AFEModel>/AFE}" level="H2"/>
+        </semantic:titleHeading>
+        <semantic:headerContent>
+            <ObjectAttribute title="Fecha de creación" text="{path: 'AFEModel>/FechaEmision', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}"/>
+            <ObjectAttribute title="Usuario creador" text="{AFEModel>/Creador}"/>
+            <ObjectStatus state="Warning" text="{path: 'AFEModel>/Estado', formatter: '.formatter.getStatusText'}"/>
+        </semantic:headerContent>
+        <semantic:content>
+            <IconTabBar id="idIconTabBarBorrador" select=".onFilterSelect" class="sapUiResponsiveContentPadding" expandable="false" backgroundDesign="Transparent" headerBackgroundDesign="Transparent" tabDensityMode="{= !${device>/system/phone} ? 'Cozy' : 'Compact' }">
+                <items>
+                    <IconTabFilter icon="sap-icon://form" text="{i18n>BorradorTabFilterDatosGenerales.text}" key="DatosGenerales" design="Horizontal">
+                        <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.DatosGenerales" type="XML"/>
+                    </IconTabFilter>
+                    <IconTabSeparator visible="{= !${device>/system/phone} }"/>
+                    <IconTabFilter icon="sap-icon://settings" text="{i18n>BorradorTabFilterInformeTecnico.text}" key="InformeTecnico" design="Horizontal">
+                        <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.InformeTecnico" type="XML"/>
+                    </IconTabFilter>
+                    <IconTabSeparator visible="{= !${device>/system/phone} }"/>
+                    <IconTabFilter icon="sap-icon://add-product" text="{i18n>BorradorTabFilterDatosComplementarios.text}" key="DatosComplementarios" design="Horizontal">
+                        <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.DatosComplementarios" type="XML"/>
+                    </IconTabFilter>
+                    <IconTabSeparator visible="{= !${device>/system/phone} }"/>
+                    <IconTabFilter icon="sap-icon://attachment" text="{i18n>BorradorTabFilterAdjuntos.text}" key="Adjuntos" design="Horizontal">
+                        <core:Fragment fragmentName="profertil.afeseguimiento.view.fragments.Adjuntos" type="XML"/>
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </semantic:content>
+        <semantic:footerCustomActions>
+                <Button text="{i18n>BorradorBotonDeleteAFE.text}" icon="sap-icon://delete" type="Emphasized" press=".handleBorrarBorradorAFEPress"/>
+                <Button text="{i18n>BorradorBotonCreacionAFE.text}" icon="sap-icon://create-form" type="Emphasized" press=".handleCreacionAFEPress"/>
+                <Button text="{i18n>BorradorBotonBorradorAFE.text}" icon="sap-icon://create-form" type="Emphasized" press=".handleUpdateAFEBorradorPress"/>
+        </semantic:footerCustomActions>
+    </semantic:SemanticPage> -->
+</mvc:View>

@@ -30,6 +30,7 @@
                         <content>
                             <ToolbarSpacer/>
                             <Button text="{i18n>CreacionBotonCreacionAFE.text}" icon="sap-icon://create-form" type="Emphasized" press=".handleCreacionAFEPress"/>
+                            <Button text="{i18n>CreacionBotonBorradorAFE.text}" icon="sap-icon://create-form" type="Emphasized" press=".handleCreacionAFEBorradorPress"/>
                         </content>
                     </OverflowToolbar>
                 </footer>

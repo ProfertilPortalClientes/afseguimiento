@@ -91,12 +91,14 @@
                         </headerToolbar>
                         <ColumnListItem>
                             <cells>
-                                <Link text="{seguimientoModel>AFE}" press=".handleDetalleAFEPress"/>
+                                <Link text="{seguimientoModel>AFE}" press=".handleDetalleAFEPress" enabled="{seguimientoModel>notAction}"/>
                                 <Text text="{seguimientoModel>Titulo}"/>
                                 <Text text="{path: 'seguimientoModel>FechaEmision', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}"/>
                                 <Text text="{seguimientoModel>Creador}"/>
                                 <Text text="{path: 'seguimientoModel>Estado', formatter: '.formatter.getStatusText'}"/>
-                                <Button tooltip="{i18n>PrincipalBotonVerEstadoWF.tooltip}" icon="sap-icon://workflow-tasks" press=".handleGetEstadosWorkflowAFE"/>
+                                <Button tooltip="{i18n>PrincipalBotonVerEstadoWF.tooltip}" icon="sap-icon://workflow-tasks" press=".handleGetEstadosWorkflowAFE" visible="{seguimientoModel>notAction}"/>
+                                <Button tooltip="{PrincipalBotonBorradorEdit.tooltip}" icon="sap-icon://edit" press=".pressEditBorrador" visible="{seguimientoModel>isBorrador}"/>
+                                <Button tooltip="{i18n>PrincipalBotonBorradorDelete.toolti}" icon="sap-icon://delete" press=".pressDeleteBorrador" visible="{seguimientoModel>isBorrador}"/>
                             </cells>
                         </ColumnListItem>
                         <columns>
@@ -125,9 +127,19 @@
                                     <Label text="{i18n>PrincipalTablaAFE.ColumnaEstado.text}"/>
                                 </header>
                             </Column>
-                            <Column hAlign="Center" width="8rem">
+                            <Column hAlign="Center" width="6rem">
                                 <header>
                                     <Label text="{i18n>PrincipalTablaAFE.ColumnaVerEstadoWF.text}"/>
+                                </header>
+                            </Column>
+                             <Column hAlign="Center" width="3rem">
+                                <header>
+                                    <!-- <Label text="{i18n>PrincipalTablaAFE.ColumnaVerEstadoWF.text}"/> -->
+                                </header>
+                            </Column>
+                             <Column hAlign="Center" width="3rem">
+                                <header>
+                                    <!-- <Label text="{i18n>PrincipalTablaAFE.ColumnaVerOpcionesBorrador.text}"/> -->
                                 </header>
                             </Column>
                         </columns>

@@ -2,13 +2,50 @@
     xmlns:core="sap.ui.core"
     xmlns:u="sap.ui.unified"
     xmlns:l="sap.ui.layout">
-    <Table inset="false" items="{ path: 'AFEModel>/Adjuntos' }" fixedLayout="false" noDataText="Sin adjuntos">
+    <Table inset="false" items="{ path: 'AFEModel>/AdjuntosLocal' }" fixedLayout="false" noDataText="Sin adjuntos" visible="{= ${appModel>/Modo} === 'borrador' ? true : false }">
+        <headerToolbar>
+            <Toolbar>
+                <content>
+                    <Title text="{i18n>CreacionTabFilterAdjuntosBorrador.TablaAdjuntosF.title}" level="H2"/>
+                    <ToolbarSpacer/>
+                    <!-- <u:FileUploader visible="{= ${appModel>/Modo} === 'creacion' ? true : false }" id="idUploader" multiple="true" name="nameUploader" tooltip="Presione para subir adjunto" change=".handleUploadAdjunto" maximumFileSize="10" buttonText="Subir adjunto" buttonOnly="true" fileType="txt,png,jpg,jpeg,pdf,csv,xls,xlsx,doc,docx" icon="sap-icon://add" style="Emphasized"/> -->
+                    <u:FileUploader visible="{= ${appModel>/Modo} === 'borrador' ? true : false }" id="idUploaderBorrador" multiple="true" name="nameUploader" tooltip="Presione para subir adjunto" change=".handleUploadAdjunto" maximumFileSize="10" buttonText="Subir adjunto" buttonOnly="true" fileType="txt,png,jpg,jpeg,pdf,csv,xls,xlsx,doc,docx" icon="sap-icon://add" style="Emphasized"/>
+                </content>
+            </Toolbar>
+        </headerToolbar>
+        <columns>
+            <!-- <Column width="3rem" minScreenWidth="Tablet" demandPopin="true">
+                <Text text=""/>
+            </Column> -->
+            <Column minScreenWidth="Tablet" demandPopin="true">
+                <Text text="{i18n>CreacionTabFilterAdjuntos.TablaAdjuntos.ColumnaNombreArchivo.text}"/>
+            </Column>
+            <!-- <Column width="10rem" minScreenWidth="Tablet" demandPopin="true" hAlign="Center" visible="{= ${appModel>/Modo} === 'creacion' ? true : false }">
+                <Text text="{i18n>CreacionTabFilterAdjuntos.TablaAdjuntos.ColumnaAcciones.text}"/>
+            </Column> -->
+            <Column width="10rem" minScreenWidth="Tablet" demandPopin="true" hAlign="Center" visible="{= ${appModel>/Modo} === 'borrador' ? true : false }">
+                <Text text="{i18n>CreacionTabFilterAdjuntos.TablaAdjuntos.ColumnaAcciones.text}"/>
+            </Column>
+        </columns>
+        <items>
+            <ColumnListItem highlight="Information">
+                <cells>
+                    <!-- <core:Icon src="{ path: 'AFEModel>Extension' , formatter: '.formatter.getIconoAdjunto' }" size="2rem"/> -->
+                    <Link text="{AFEModel>filename}"/>
+                    <!-- <Button type="Reject" icon="sap-icon://delete" press=".handleEliminarAdjunto" visible="{= ${appModel>/Modo} === 'creacion' ? true : false }"/> -->
+                    <Button type="Reject" icon="sap-icon://delete" press=".handleEliminarAdjuntoLocal" visible="{= ${appModel>/Modo} === 'borrador' ? true : false }"/>
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+    <Table inset="false" items="{ path: 'AFEModel>/Adjuntos' }" fixedLayout="false" noDataText="Sin adjuntos" id="adjuntosTable">
         <headerToolbar>
             <Toolbar>
                 <content>
                     <Title text="{i18n>CreacionTabFilterAdjuntos.TablaAdjuntos.title}" level="H2"/>
                     <ToolbarSpacer/>
                     <u:FileUploader visible="{= ${appModel>/Modo} === 'creacion' ? true : false }" id="idUploader" multiple="true" name="nameUploader" tooltip="Presione para subir adjunto" change=".handleUploadAdjunto" maximumFileSize="10" buttonText="Subir adjunto" buttonOnly="true" fileType="txt,png,jpg,jpeg,pdf,csv,xls,xlsx,doc,docx" icon="sap-icon://add" style="Emphasized"/>
+                    <!-- <u:FileUploader visible="{= ${appModel>/Modo} === 'borrador' ? true : false }" id="idUploaderBorrador" multiple="true" name="nameUploader" tooltip="Presione para subir adjunto" change=".handleUploadAdjunto" maximumFileSize="10" buttonText="Subir adjunto" buttonOnly="true" fileType="txt,png,jpg,jpeg,pdf,csv,xls,xlsx,doc,docx" icon="sap-icon://add" style="Emphasized"/> -->
                 </content>
             </Toolbar>
         </headerToolbar>
@@ -22,6 +59,9 @@
             <Column width="10rem" minScreenWidth="Tablet" demandPopin="true" hAlign="Center" visible="{= ${appModel>/Modo} === 'creacion' ? true : false }">
                 <Text text="{i18n>CreacionTabFilterAdjuntos.TablaAdjuntos.ColumnaAcciones.text}"/>
             </Column>
+            <Column width="10rem" minScreenWidth="Tablet" demandPopin="true" hAlign="Center" visible="{= ${appModel>/Modo} === 'borrador' ? true : false }">
+                <Text text="{i18n>CreacionTabFilterAdjuntos.TablaAdjuntos.ColumnaAcciones.text}"/>
+            </Column>
         </columns>
         <items>
             <ColumnListItem highlight="Information">
@@ -29,6 +69,7 @@
                     <!-- <core:Icon src="{ path: 'AFEModel>Extension' , formatter: '.formatter.getIconoAdjunto' }" size="2rem"/> -->
                     <Link text="{AFEModel>filename}" press=".handleDescargarAdjunto"/>
                     <Button type="Reject" icon="sap-icon://delete" press=".handleEliminarAdjunto" visible="{= ${appModel>/Modo} === 'creacion' ? true : false }"/>
+                    <Button type="Reject" icon="sap-icon://delete" press=".handleEliminarAdjuntoSDM" visible="{= ${appModel>/Modo} === 'borrador' ? true : false }"/>
                 </cells>
             </ColumnListItem>
         </items>

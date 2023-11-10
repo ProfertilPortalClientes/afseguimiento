@@ -164,4 +164,86 @@
             </f:formContainers>
         </f:Form>
     </Panel>
+
+    <!-- Modo borrador -->
+    <Panel visible="{= ${appModel>/Modo} === 'borrador' ? true : false }">
+        <f:Form editable="true">
+            <f:layout>
+                <f:ResponsiveGridLayout labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false"/>
+            </f:layout>
+            <f:formContainers>
+                <f:FormContainer title="{i18n>DatosComplementarios.ContainerObjetivos.title}">
+                    <f:formElements>
+                        <f:FormElement label="{i18n>DatosComplementarios.ContainerObjetivosObjetivo.text}">
+                            <f:fields>
+                                <TextArea rows="3" value="{AFEModel>/DatosComplementariosObjetivo}" placeholder="{i18n>DatosComplementarios.ContainerObjetivosObjetivo.placeholder}" required="true" valueStateText="{i18n>DatosComplementarios.ObjetivoValidacion.text}" valueState="{estadosValidaciones>/DatosComplementarios_Objetivo}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="{i18n>DatosComplementarios.ContainerObjetivosJustificacion.text}">
+                            <f:fields>
+                                <TextArea rows="3" value="{AFEModel>/DatosComplementariosJustificacion}" placeholder="{i18n>DatosComplementarios.ContainerObjetivosJustificacion.placeholder}" required="true" valueStateText="{i18n>DatosComplementarios.JustificacionValidacion.text}" valueState="{estadosValidaciones>/DatosComplementarios_Justificacion}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="{i18n>DatosComplementarios.ContainerObjetivosAlcance.text}">
+                            <f:fields>
+                                <TextArea rows="3" value="{AFEModel>/DatosComplementariosAlcance}" placeholder="{i18n>DatosComplementarios.ContainerObjetivosAlcance.placeholder}" required="true" valueStateText="{i18n>DatosComplementarios.AlcanceValidacion.text}" valueState="{estadosValidaciones>/DatosComplementarios_Alcance}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="{i18n>DatosComplementarios.ContainerObjetivosAntecedentes.text}">
+                            <f:fields>
+                                <TextArea rows="3" value="{AFEModel>/DatosComplementariosAntecedentes}" placeholder="{i18n>DatosComplementarios.ContainerObjetivosAntecedentes.placeholder}"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+            </f:formContainers>
+        </f:Form>
+        <f:Form editable="true">
+            <f:layout>
+                <f:ResponsiveGridLayout labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false"/>
+            </f:layout>
+            <f:formContainers>
+                <f:FormContainer title="{i18n>DatosComplementarios.ContainerEstimacionCostos.title}">
+                    <f:formElements>
+                        <f:FormElement label="{i18n>DatosComplementarios.ContainerEstimacionCostosEstimacion.text}">
+                            <f:fields>
+                                <TextArea rows="3" value="{AFEModel>/DatosComplementariosEstimacion}" placeholder="{i18n>DatosComplementarios.ContainerEstimacionCostosEstimacion.placeholder}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="{i18n>DatosComplementarios.ContainerEstimacionCostosAlternativas.text}">
+                            <f:fields>
+                                <TextArea rows="3" value="{AFEModel>/DatosComplementariosAlternativas}" placeholder="{i18n>DatosComplementarios.ContainerEstimacionCostosAlternativas.placeholder}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="{i18n>DatosComplementarios.ContainerEstimacionCostosVariacionPresupuesto.text}">
+                            <f:fields>
+                                <TextArea rows="3" value="{AFEModel>/DatosComplementariosVariacion}" placeholder="{i18n>DatosComplementarios.ContainerEstimacionCostosVariacionPresupuesto.placeholder}" required="true" valueStateText="{i18n>DatosComplementarios.VariacionValidacion.text}" valueState="{estadosValidaciones>/DatosComplementarios_Variacion}"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+            </f:formContainers>
+        </f:Form>
+        <f:Form editable="true">
+            <f:layout>
+                <f:ResponsiveGridLayout labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false"/>
+            </f:layout>
+            <f:formContainers>
+                <f:FormContainer title="{i18n>DatosComplementarios.ContainerDetallesAdicionales.title}">
+                    <f:formElements>
+                        <f:FormElement label="{i18n>DatosComplementarios.ContainerDetallesAdicionalesImpactoAmbiental.text}">
+                            <f:fields>
+                                <TextArea rows="3" value="{AFEModel>/DatosComplementariosImpactoAmbiental}" placeholder="{i18n>DatosComplementarios.ContainerDetallesAdicionalesImpactoAmbiental.placeholder}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement label="{i18n>DatosComplementarios.ContainerDetallesAdicionalesCronograma.text}">
+                            <f:fields>
+                                <TextArea rows="3" value="{AFEModel>/DatosComplementariosCronograma}" placeholder="{i18n>DatosComplementarios.ContainerDetallesAdicionalesCronograma.placeholder}"/>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+            </f:formContainers>
+        </f:Form>
+    </Panel>
 </core:FragmentDefinition>
