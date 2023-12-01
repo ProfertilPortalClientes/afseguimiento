@@ -37,16 +37,22 @@
                         </f:FormElement>
                         <f:FormElement label="Responsable">
                             <f:fields>
-                                <Select items="{valueHelpModel>/Responsables}" placeholder="Seleccione responsable" selectedKey="{AFEModel>/Responsable}" change=".handleSelectResponsable" required="true" valueStateText="{i18n>DatosGenerales.ResponsableValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_Responsable}" showSecondaryValues= "true">
+                                <ComboBox id="idResponsablesCreacion" items="{valueHelpModel>/Responsables}" placeholder="Seleccione sector" selectedKey="{AFEModel>/Responsable}" change=".handleSelectResponsable" required="true" valueStateText="{i18n>DatosGenerales.ResponsableValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_Responsable}" showSecondaryValues= "true">
                                     <core:ListItem key="{valueHelpModel>Usuario}" text="{valueHelpModel>Apellido}, {valueHelpModel>Nombre}" additionalText="{valueHelpModel>Usuario}"/>
-                                </Select>
+                                </ComboBox>
+                                <!-- <Select items="{valueHelpModel>/Responsables}" placeholder="Seleccione responsable" selectedKey="{AFEModel>/Responsable}" change=".handleSelectResponsable" required="true" valueStateText="{i18n>DatosGenerales.ResponsableValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_Responsable}" showSecondaryValues= "true">
+                                    <core:ListItem key="{valueHelpModel>Usuario}" text="{valueHelpModel>Apellido}, {valueHelpModel>Nombre}" additionalText="{valueHelpModel>Usuario}"/>
+                                </Select> -->
                             </f:fields>
                         </f:FormElement>
                         <f:FormElement label="Jefe">
                             <f:fields>
-                                <Select items="{valueHelpModel>/Jefes}" placeholder="Seleccione jefe" selectedKey="{AFEModel>/Jefe}" valueStateText="{i18n>DatosGenerales.JefeValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_Jefe}" showSecondaryValues= "true">
+                                <ComboBox id="idJefeCreacion" items="{valueHelpModel>/Jefes}" placeholder="Seleccione jefe" selectedKey="{AFEModel>/Jefe}" valueStateText="{i18n>DatosGenerales.JefeValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_Jefe}" showSecondaryValues= "true">
                                     <core:ListItem key="{valueHelpModel>Usuario}" text="{valueHelpModel>Apellido}, {valueHelpModel>Nombre}" additionalText="{valueHelpModel>Usuario}"/>
-                                </Select>
+                                </ComboBox>
+                                <!-- <Select items="{valueHelpModel>/Jefes}" placeholder="Seleccione jefe" selectedKey="{AFEModel>/Jefe}" valueStateText="{i18n>DatosGenerales.JefeValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_Jefe}" showSecondaryValues= "true">
+                                    <core:ListItem key="{valueHelpModel>Usuario}" text="{valueHelpModel>Apellido}, {valueHelpModel>Nombre}" additionalText="{valueHelpModel>Usuario}"/>
+                                </Select> -->
                             </f:fields>
                         </f:FormElement>
                         <f:FormElement label="Gerente aprobador">
@@ -60,9 +66,12 @@
                     <f:formElements>
                         <f:FormElement label="Sector de origen">
                             <f:fields>
-                                <Select items="{valueHelpModel>/Sectores}" placeholder="Seleccione sector" selectedKey="{AFEModel>/SectorOrigen}" required="true" valueStateText="{i18n>DatosGenerales.SectorOrigenValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_SectorOrigen}">
+                                <ComboBox id="sectorSelectCreacion" items="{valueHelpModel>/Sectores}" placeholder="Seleccione sector" selectedKey="{AFEModel>/SectorOrigen}" required="true" valueStateText="{i18n>DatosGenerales.SectorOrigenValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_SectorOrigen}">
                                     <core:Item key="{valueHelpModel>Sector}" text="{valueHelpModel>Descripcion}" />
-                                </Select>
+                                </ComboBox>
+                                <!-- <Select items="{valueHelpModel>/Sectores}" placeholder="Seleccione sector" selectedKey="{AFEModel>/SectorOrigen}" required="true" valueStateText="{i18n>DatosGenerales.SectorOrigenValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_SectorOrigen}">
+                                    <core:Item key="{valueHelpModel>Sector}" text="{valueHelpModel>Descripcion}" />
+                                </Select> -->
                             </f:fields>
                         </f:FormElement>
                         <f:FormElement label="Período desde/hasta">
@@ -83,9 +92,12 @@
                         </f:FormElement>
                         <f:FormElement label="Imputado a">
                             <f:fields>
-                                <Select items="{valueHelpModel>/Imputaciones}" change=".handleChangeImputacion" placeholder="Seleccione imputación" selectedKey="{AFEModel>/ImputadoA}" required="true" valueStateText="{i18n>DatosGenerales.ImputadoAValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_ImputadoA}">
+                                <ComboBox id="idImputadoCreacion" items="{valueHelpModel>/Imputaciones}" change=".handleChangeImputacion" placeholder="Seleccione imputación" selectedKey="{AFEModel>/ImputadoA}" required="true" valueStateText="{i18n>DatosGenerales.ImputadoAValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_ImputadoA}">
                                     <core:Item key="{valueHelpModel>NumeroOrden}" text="{valueHelpModel>Codigo}" />
-                                </Select>
+                                </ComboBox>
+                                <!-- <Select items="{valueHelpModel>/Imputaciones}" change=".handleChangeImputacion" placeholder="Seleccione imputación" selectedKey="{AFEModel>/ImputadoA}" required="true" valueStateText="{i18n>DatosGenerales.ImputadoAValidacion.text}" valueState="{estadosValidaciones>/DatosGenerales_ImputadoA}">
+                                    <core:Item key="{valueHelpModel>NumeroOrden}" text="{valueHelpModel>Codigo}" />
+                                </Select> -->
                             </f:fields>
                         </f:FormElement>
                         <f:FormElement label="Título">

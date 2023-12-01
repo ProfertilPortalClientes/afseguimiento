@@ -16,6 +16,9 @@ sap.ui.define([
 
             onInit: function () {
 
+                // obtener información usuario logueado
+                // var promiseUser = this.getDataUsuario();
+
                 that = this;
 
                 that.oGlobalBusyDialog = new sap.m.BusyDialog();
@@ -56,12 +59,10 @@ sap.ui.define([
                 // obtener URL repositorio de adjuntos
                 this.setRepoURLAdjuntos();
 
-                // obtener información usuario logueado
-                this.getDataUsuario()
-
                 // obtener imputaciones para los filtros
                 this.getValueHelpImputacion();
 
+                // promiseUser.then(sap.ui.core.UIComponent.getRouterFor(this).getRoute("Principal").attachPatternMatched(this._onObjectMatched, this));
                 // inicializar vista
                 sap.ui.core.UIComponent.getRouterFor(this).getRoute("Principal").attachPatternMatched(this._onObjectMatched, this);
 
@@ -91,6 +92,7 @@ sap.ui.define([
                 var aPromises = [];
                 aPromises.push(this.getSeguimientoAFES());
                 aPromises.push(this.getMatchcodeUsuariosData());
+                aPromises.push(this.getDataUsuario());
                 that.oGlobalBusyDialog.setText(that.oTextos.getText("PrincipalTablaAFEBusy.text"));
                 that.oGlobalBusyDialog.open();
                 Promise.all(aPromises).then(that.onSuccessData.bind(that), that.onErrorData.bind(that));
@@ -203,14 +205,27 @@ sap.ui.define([
             },
 
             getDataUsuario: function () {
-                var sUsuario = "";
-                this.getOwnerComponent().getModel().read("/DatosUsuarioSet('" + sUsuario + "')", {
-                    success: function (oData, oResponse) {
-                        that.getOwnerComponent().getModel("loginModel").setProperty("/DatosUsuario", oData);
-                    }.bind(this),
-                    error: function (oError) {
-                    }.bind(this)
-                });
+                return new Promise(
+                    function(resolve,reject) {
+                        var sUsuario = "";
+                        that.getOwnerComponent().getModel().read("/DatosUsuarioSet('" + sUsuario + "')", {
+                            success: function (oData, oResponse) {
+                                resolve(oData);
+                                that.getOwnerComponent().getModel("loginModel").setProperty("/DatosUsuario", oData);
+                            }.bind(that),
+                            error: function (oError) {
+                                reject(oError);
+                            }.bind(that)
+                        });
+                    });
+                // var sUsuario = "";
+                // this.getOwnerComponent().getModel().read("/DatosUsuarioSet('" + sUsuario + "')", {
+                //     success: function (oData, oResponse) {
+                //         that.getOwnerComponent().getModel("loginModel").setProperty("/DatosUsuario", oData);
+                //     }.bind(this),
+                //     error: function (oError) {
+                //     }.bind(this)
+                // });
             },
 
             handleCreacionAFEPress: function (oEvent) {
